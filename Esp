@@ -1,0 +1,176 @@
+local lp = game:GetService("Players").LocalPlayer
+local rs = game:GetService("RunService")
+local uis = game:GetService("UserInputService")
+
+local old = lp.PlayerGui:FindFirstChild("ESP_V2")
+if old then
+    for _, p in pairs(game.Players:GetPlayers()) do
+        local f = workspace:FindFirstChild(p.Name .. "_ESP")
+        if f then f:Destroy() end
+    end
+    old:Destroy()
+end
+
+local gui = Instance.new("ScreenGui", lp.PlayerGui)
+gui.Name = "ESP_V2"
+local main = Instance.new("Frame", gui)
+local corner = Instance.new("UICorner", main)
+local top = Instance.new("Frame", main)
+local close = Instance.new("TextButton", main)
+
+main.Size = UDim2.new(0, 200, 0, 120)
+main.Position = UDim2.new(0.7, 0, 0.25, 0)
+main.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+corner.CornerRadius = UDim.new(0, 6)
+
+top.Size = UDim2.new(1, 0, 0, 35)
+top.BackgroundTransparency = 1
+local title = Instance.new("TextLabel", top)
+title.Size = UDim2.new(1, 0, 1, 0)
+title.Position = UDim2.new(0, 15, 0, 0)
+title.Text = "ESP"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = "GothamBold"
+title.TextSize = 15
+title.TextXAlignment = "Left"
+title.BackgroundTransparency = 1
+
+close.Size = UDim2.new(0, 20, 0, 20)
+close.Position = UDim2.new(1, -30, 0, 8)
+close.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
+close.Text = ""
+Instance.new("UICorner", close).CornerRadius = UDim.new(0, 4)
+
+local function cleanESP()
+    for _, p in pairs(game.Players:GetPlayers()) do
+        local f = workspace:FindFirstChild(p.Name .. "_ESP")
+        if f then f:Destroy() end
+    end
+end
+
+close.MouseButton1Click:Connect(function()
+    cleanESP()
+    gui:Destroy()
+end)
+
+local function makeTog(y, name)
+    local btn = Instance.new("TextButton", main)
+    local dot = Instance.new("Frame", btn)
+    local lab = Instance.new("TextLabel", main)
+    
+    btn.Size = UDim2.new(0, 42, 0, 22)
+    btn.Position = UDim2.new(0, 15, 0, y)
+    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    btn.Text = ""
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
+    
+    dot.Size = UDim2.new(0, 18, 0, 18)
+    dot.Position = UDim2.new(0, 2, 0.5, -9)
+    dot.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+    Instance.new("UICorner", dot).CornerRadius = UDim.new(0, 3)
+    
+    lab.Size = UDim2.new(0, 100, 0, 22)
+    lab.Position = UDim2.new(0, 65, 0, y)
+    lab.BackgroundTransparency = 1
+    lab.Text = name
+    lab.TextColor3 = Color3.fromRGB(230, 230, 230)
+    lab.Font = "Gotham"
+    lab.TextSize = 14
+    lab.TextXAlignment = "Left"
+    
+    return btn, dot
+end
+
+local espBtn, espDot = makeTog(45, "Player ESP")
+local teamBtn, teamDot = makeTog(80, "Team Check")
+
+local drag, dStart, sPos
+top.InputBegan:Connect(function(i)
+    if i.UserInputType == Enum.UserInputType.MouseButton1 then
+        drag = true dStart = i.Position sPos = main.Position
+    end
+end)
+uis.InputChanged:Connect(function(i)
+    if drag and i.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = i.Position - dStart
+        main.Position = UDim2.new(sPos.X.Scale, sPos.X.Offset + delta.X, sPos.Y.Scale, sPos.Y.Offset + delta.Y)
+    end
+end)
+uis.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end end)
+
+local espOn, teamOn = false, false
+
+espBtn.MouseButton1Click:Connect(function()
+    espOn = not espOn
+    espBtn.BackgroundColor3 = espOn and Color3.fromRGB(50, 100, 255) or Color3.fromRGB(30, 30, 30)
+    espDot:TweenPosition(espOn and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9), "Out", "Quad", 0.1)
+    if not espOn then cleanESP() end
+end)
+
+teamBtn.MouseButton1Click:Connect(function()
+    teamOn = not teamOn
+    teamBtn.BackgroundColor3 = teamOn and Color3.fromRGB(50, 100, 255) or Color3.fromRGB(30, 30, 30)
+    teamDot:TweenPosition(teamOn and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9), "Out", "Quad", 0.1)
+end)
+
+task.spawn(function()
+    while task.wait(0.5) do
+        if not gui.Parent then 
+            cleanESP()
+            break 
+        end
+        if espOn then
+            for _, p in pairs(game.Players:GetPlayers()) do
+                if p ~= lp and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                    if teamOn and p.Team == lp.Team then
+                        local oldESP = workspace:FindFirstChild(p.Name .. "_ESP")
+                        if oldESP then oldESP:Destroy() end
+                        continue
+                    end
+                    
+                    local f = workspace:FindFirstChild(p.Name .. "_ESP") or Instance.new("Folder", workspace)
+                    f.Name = p.Name .. "_ESP"
+                    
+                    for _, part in pairs(p.Character:GetChildren()) do
+                        if part:IsA("BasePart") and not f:FindFirstChild(part.Name) then
+                            local a = Instance.new("BoxHandleAdornment", f)
+                            a.Name = part.Name
+                            a.Adornee = part
+                            a.AlwaysOnTop = true
+                            a.ZIndex = 5
+                            a.Size = part.Size
+                            a.Transparency = 0.6
+                            a.Color = p.TeamColor
+                        end
+                    end
+                    
+                    local head = p.Character:FindFirstChild("Head")
+                    if head and not f:FindFirstChild("Tag") then
+                        local b = Instance.new("BillboardGui", f)
+                        b.Name = "Tag"
+                        b.Adornee = head
+                        b.Size = UDim2.new(0, 100, 0, 50)
+                        b.StudsOffset = Vector3.new(0, 2, 0)
+                        b.AlwaysOnTop = true
+                        local t = Instance.new("TextLabel", b)
+                        t.Size = UDim2.new(1, 0, 1, 0)
+                        t.BackgroundTransparency = 1
+                        t.TextColor3 = Color3.new(1, 1, 1)
+                        t.TextStrokeTransparency = 0
+                        t.Font = "GothamBold"
+                        t.TextSize = 12
+                        
+                        rs.RenderStepped:Connect(function()
+                            if p.Character and p.Character:FindFirstChild("Humanoid") and head.Parent and f.Parent then
+                                local dist = math.floor((lp.Character.HumanoidRootPart.Position - head.Position).Magnitude)
+                                t.Text = p.Name .. "\n" .. math.floor(p.Character.Humanoid.Health) .. " HP | " .. dist .. "m"
+                            else
+                                b:Destroy()
+                            end
+                        end)
+                    end
+                end
+            end
+        end
+    end
+end)
