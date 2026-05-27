@@ -1,0 +1,189 @@
+local lp = game:GetService("Players").LocalPlayer
+local rs = game:GetService("RunService")
+local uis = game:GetService("UserInputService")
+local camera = workspace.CurrentCamera
+
+local function clear()
+    local old = lp.PlayerGui:FindFirstChild("MV_PRED")
+    if old then old:Destroy() end
+    if _G.PredDrawings then
+        for _, v in pairs(_G.PredDrawings) do v:Remove() end
+    end
+    _G.PredDrawings = {}
+end
+clear()
+
+local gui = Instance.new("ScreenGui", lp.PlayerGui)
+gui.Name = "MV_PRED"
+local main = Instance.new("Frame", gui)
+local corner = Instance.new("UICorner", main)
+local top = Instance.new("Frame", main)
+local close = Instance.new("TextButton", main)
+
+main.Size = UDim2.new(0, 200, 0, 180)
+main.Position = UDim2.new(0.8, 0, 0.4, 0)
+main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+corner.CornerRadius = UDim.new(0, 6)
+
+top.Size = UDim2.new(1, 0, 0, 35)
+top.BackgroundTransparency = 1
+local title = Instance.new("TextLabel", top)
+title.Size = UDim2.new(1, 0, 1, 0)
+title.Position = UDim2.new(0, 12, 0, 0)
+title.Text = "MOVEMENT"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = "GothamBold"
+title.TextSize = 14
+title.TextXAlignment = "Left"
+title.BackgroundTransparency = 1
+
+close.Size = UDim2.new(0, 18, 0, 18)
+close.Position = UDim2.new(1, -26, 0, 8)
+close.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
+close.Text = ""
+Instance.new("UICorner", close).CornerRadius = UDim.new(0, 4)
+close.MouseButton1Click:Connect(function() clear() gui:Destroy() end)
+
+local state = {enabled = false, trajectory = false, velocity = false, prejump = false}
+
+local function makeTog(y, name, key)
+    local btn = Instance.new("TextButton", main)
+    local dot = Instance.new("Frame", btn)
+    local lab = Instance.new("TextLabel", main)
+    
+    btn.Size = UDim2.new(0, 36, 0, 18)
+    btn.Position = UDim2.new(0, 15, 0, y)
+    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    btn.Text = ""
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
+    
+    dot.Size = UDim2.new(0, 14, 0, 14)
+    dot.Position = UDim2.new(0, 2, 0.5, -7)
+    dot.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+    Instance.new("UICorner", dot).CornerRadius = UDim.new(0, 3)
+    
+    lab.Size = UDim2.new(0, 120, 0, 18)
+    lab.Position = UDim2.new(0, 60, 0, y)
+    lab.BackgroundTransparency = 1
+    lab.Text = name
+    lab.TextColor3 = Color3.fromRGB(200, 200, 200)
+    lab.Font = "Gotham"
+    lab.TextSize = 13
+    lab.TextXAlignment = "Left"
+    
+    btn.MouseButton1Click:Connect(function()
+        state[key] = not state[key]
+        btn.BackgroundColor3 = state[key] and Color3.fromRGB(50, 100, 255) or Color3.fromRGB(30, 30, 30)
+        dot:TweenPosition(state[key] and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7), "Out", "Quad", 0.1)
+    end)
+end
+
+makeTog(45, "Predict Enabled", "enabled")
+makeTog(75, "Trajectory Path", "trajectory")
+makeTog(105, "Velocity Curve", "velocity")
+makeTog(135, "Pre-Jump Arc", "prejump")
+
+local drag, dStart, sPos
+top.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = true dStart = i.Position sPos = main.Position end end)
+uis.InputChanged:Connect(function(i) if drag and i.UserInputType == Enum.UserInputType.MouseMovement then local delta = i.Position - dStart main.Position = UDim2.new(sPos.X.Scale, sPos.X.Offset + delta.X, sPos.Y.Scale, sPos.Y.Offset + delta.Y) end end)
+uis.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end end)
+
+local function create(class, props)
+    local obj = Drawing.new(class)
+    for i, v in pairs(props) do obj[i] = v end
+    table.insert(_G.PredDrawings, obj)
+    return obj
+end
+
+local preddot = create("Circle", {Radius = 6, Filled = true, Color = Color3.new(0, 1, 1), Visible = false})
+local landdot = create("Circle", {Radius = 10, Filled = true, Color = Color3.new(1, 0.4, 0.4), Visible = false})
+local arclines, prejumplines, velcurve = {}, {}, {}
+
+for i = 1, 30 do table.insert(arclines, create("Line", {Thickness = 2, Color = Color3.new(1, 0.9, 0.5), Visible = false})) end
+for i = 1, 30 do table.insert(prejumplines, create("Line", {Thickness = 2, Color = Color3.new(0.4, 0.8, 1), Transparency = 0.7, Visible = false})) end
+for i = 1, 8 do table.insert(velcurve, create("Line", {Thickness = 3, Color = Color3.new(0, 1, 0), Visible = false})) end
+
+local function toscreen(p)
+    local v, on = camera:WorldToViewportPoint(p)
+    return Vector2.new(v.X, v.Y), on
+end
+
+local function simulate(p0, v0)
+    local pos, landed = {}, nil
+    local prev = p0
+    local params = RaycastParams.new()
+    params.FilterDescendantsInstances = {lp.Character}
+    params.FilterType = Enum.RaycastFilterType.Exclude
+    
+    for t = 0, 2.5, 0.05 do
+        local curr = p0 + v0 * t + Vector3.new(0, -workspace.Gravity, 0) * 0.5 * t * t
+        table.insert(pos, curr)
+        local ray = workspace:Raycast(prev, curr - prev, params)
+        if ray then landed = ray.Position break end
+        prev = curr
+    end
+    return pos, landed
+end
+
+local lastcf, turnspeed = camera.CFrame, 0
+rs.RenderStepped:Connect(function(dt)
+    if not gui.Parent then return end
+    local char = lp.Character
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")
+    local hum = char and char:FindFirstChild("Humanoid")
+    if not hrp or not hum then return end
+
+    local rel = lastcf:Inverse() * camera.CFrame
+    local _, yaw = rel:ToEulerAnglesXYZ()
+    turnspeed = turnspeed * 0.7 + (yaw / math.max(dt, 0.001)) * 0.3
+    lastcf = camera.CFrame
+
+    if state.enabled then
+        local p2, on = toscreen(hrp.Position + hrp.AssemblyLinearVelocity * 0.25)
+        preddot.Position = p2
+        preddot.Visible = on
+    else preddot.Visible = false end
+
+    if state.trajectory then
+        local pts, land = simulate(hrp.Position, hrp.AssemblyLinearVelocity)
+        for i, l in ipairs(arclines) do
+            local idx1 = math.floor((i-1) * (#pts-1)/#arclines) + 1
+            local idx2 = math.floor(i * (#pts-1)/#arclines) + 1
+            local s1, o1 = toscreen(pts[idx1])
+            local s2, o2 = toscreen(pts[idx2])
+            l.From, l.To, l.Visible = s1, s2, o1 and o2
+        end
+        if land then
+            local sl, ol = toscreen(land)
+            landdot.Position, landdot.Visible = sl, ol
+        else landdot.Visible = false end
+    else
+        landdot.Visible = false
+        for _, l in ipairs(arclines) do l.Visible = false end
+    end
+
+    if state.velocity and hrp.AssemblyLinearVelocity.Magnitude > 1 then
+        local v0 = hrp.AssemblyLinearVelocity
+        local cur = -turnspeed * 0.8
+        for i, l in ipairs(velcurve) do
+            local t0, t1 = (i-1)/8 * 10, i/8 * 10
+            local p0 = hrp.Position + v0.Unit * t0 + v0.Unit:Cross(Vector3.new(0,1,0)).Unit * (cur * t0 * t0 * 0.06)
+            local p1 = hrp.Position + v0.Unit * t1 + v0.Unit:Cross(Vector3.new(0,1,0)).Unit * (cur * t1 * t1 * 0.06)
+            local s1, o1 = toscreen(p0)
+            local s2, o2 = toscreen(p1)
+            l.From, l.To, l.Visible = s1, s2, o1 and o2
+        end
+    else for _, l in ipairs(velcurve) do l.Visible = false end end
+
+    if state.prejump then
+        local move = hum.MoveDirection * hum.WalkSpeed
+        local pts, _ = simulate(hrp.Position, move + Vector3.new(0, 50, 0))
+        for i, l in ipairs(prejumplines) do
+            local idx1 = math.floor((i-1) * (#pts-1)/#prejumplines) + 1
+            local idx2 = math.floor(i * (#pts-1)/#prejumplines) + 1
+            local s1, o1 = toscreen(pts[idx1])
+            local s2, o2 = toscreen(pts[idx2])
+            l.From, l.To, l.Visible = s1, s2, o1 and o2
+        end
+    else for _, l in ipairs(prejumplines) do l.Visible = false end end
+end)
