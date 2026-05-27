@@ -2,17 +2,25 @@ local lp = game:GetService("Players").LocalPlayer
 local rs = game:GetService("RunService")
 local uis = game:GetService("UserInputService")
 
-local old = lp.PlayerGui:FindFirstChild("ESP_V2")
-if old then
+local function cleanESP()
     for _, p in pairs(game.Players:GetPlayers()) do
         local f = workspace:FindFirstChild(p.Name .. "_ESP")
         if f then f:Destroy() end
     end
+end
+
+local old = lp.PlayerGui:FindFirstChild("ESP_V2") or (gethui and gethui():FindFirstChild("ESP_V2"))
+if old then
+    cleanESP()
     old:Destroy()
 end
 
-local gui = Instance.new("ScreenGui", lp.PlayerGui)
+local gui = Instance.new("ScreenGui")
 gui.Name = "ESP_V2"
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 999
+gui.Parent = (gethui and gethui()) or lp.PlayerGui
+
 local main = Instance.new("Frame", gui)
 local corner = Instance.new("UICorner", main)
 local top = Instance.new("Frame", main)
@@ -21,7 +29,8 @@ local close = Instance.new("TextButton", main)
 main.Size = UDim2.new(0, 200, 0, 120)
 main.Position = UDim2.new(0.7, 0, 0.25, 0)
 main.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
-corner.CornerRadius = UDim.new(0, 6)
+main.BorderSizePixel = 0
+corner.CornerRadius = UDim.new(0, 8)
 
 top.Size = UDim2.new(1, 0, 0, 35)
 top.BackgroundTransparency = 1
@@ -31,22 +40,17 @@ title.Position = UDim2.new(0, 15, 0, 0)
 title.Text = "ESP"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Font = "GothamBold"
-title.TextSize = 15
+title.TextSize = 14
 title.TextXAlignment = "Left"
 title.BackgroundTransparency = 1
 
-close.Size = UDim2.new(0, 20, 0, 20)
-close.Position = UDim2.new(1, -30, 0, 8)
+close.Size = UDim2.new(0, 18, 0, 18)
+close.Position = UDim2.new(1, -26, 0, 8)
 close.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
 close.Text = ""
 Instance.new("UICorner", close).CornerRadius = UDim.new(0, 4)
 
-local function cleanESP()
-    for _, p in pairs(game.Players:GetPlayers()) do
-        local f = workspace:FindFirstChild(p.Name .. "_ESP")
-        if f then f:Destroy() end
-    end
-end
+local espOn, teamOn = false, false
 
 close.MouseButton1Click:Connect(function()
     cleanESP()
@@ -75,7 +79,7 @@ local function makeTog(y, name)
     lab.Text = name
     lab.TextColor3 = Color3.fromRGB(230, 230, 230)
     lab.Font = "Gotham"
-    lab.TextSize = 14
+    lab.TextSize = 13
     lab.TextXAlignment = "Left"
     
     return btn, dot
@@ -84,21 +88,10 @@ end
 local espBtn, espDot = makeTog(45, "Player ESP")
 local teamBtn, teamDot = makeTog(80, "Team Check")
 
-local drag, dStart, sPos
-top.InputBegan:Connect(function(i)
-    if i.UserInputType == Enum.UserInputType.MouseButton1 then
-        drag = true dStart = i.Position sPos = main.Position
-    end
-end)
-uis.InputChanged:Connect(function(i)
-    if drag and i.UserInputType == Enum.UserInputType.MouseMovement then
-        local delta = i.Position - dStart
-        main.Position = UDim2.new(sPos.X.Scale, sPos.X.Offset + delta.X, sPos.Y.Scale, sPos.Y.Offset + delta.Y)
-    end
-end)
-uis.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end end)
-
-local espOn, teamOn = false, false
+local dragging, dStart, sPos
+top.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = true dStart = i.Position sPos = main.Position end end)
+uis.InputChanged:Connect(function(i) if dragging and i.UserInputType == Enum.UserInputType.MouseMovement then local delta = i.Position - dStart main.Position = UDim2.new(sPos.X.Scale, sPos.X.Offset + delta.X, sPos.Y.Scale, sPos.Y.Offset + delta.Y) end end)
+uis.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
 
 espBtn.MouseButton1Click:Connect(function()
     espOn = not espOn
@@ -115,10 +108,7 @@ end)
 
 task.spawn(function()
     while task.wait(0.5) do
-        if not gui.Parent then 
-            cleanESP()
-            break 
-        end
+        if not gui or not gui.Parent then cleanESP() break end
         if espOn then
             for _, p in pairs(game.Players:GetPlayers()) do
                 if p ~= lp and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
