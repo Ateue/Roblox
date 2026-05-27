@@ -1,0 +1,146 @@
+local lp = game:GetService("Players").LocalPlayer
+local rs = game:GetService("RunService")
+local uis = game:GetService("UserInputService")
+
+if _G.InvData then
+    _G.InvData.Active = false
+    task.wait()
+    for _, v in pairs(_G.InvData.Conns) do v:Disconnect() end
+    if _G.InvData.Gui then _G.InvData.Gui:Destroy() end
+    _G.InvData = nil
+end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "INV_V13"
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 999
+gui.Parent = (gethui and gethui()) or lp:WaitForChild("PlayerGui")
+
+local main = Instance.new("Frame", gui)
+local corner = Instance.new("UICorner", main)
+local top = Instance.new("Frame", main)
+local title = Instance.new("TextLabel", top)
+local close = Instance.new("TextButton", main)
+local btn = Instance.new("TextButton", main)
+local dot = Instance.new("Frame", btn)
+local hint = Instance.new("TextLabel", main)
+
+main.Size = UDim2.new(0, 180, 0, 90)
+main.Position = UDim2.new(0.5, -90, 0.1, 0)
+main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+main.BorderSizePixel = 0
+corner.CornerRadius = UDim.new(0, 4)
+
+top.Size = UDim2.new(1, 0, 0, 30)
+top.BackgroundTransparency = 1
+title.Size = UDim2.new(1, 0, 1, 0)
+title.Position = UDim2.new(0, 12, 0, 0)
+title.Text = "Invisible"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 13
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.BackgroundTransparency = 1
+
+close.Size = UDim2.new(0, 18, 0, 18)
+close.Position = UDim2.new(1, -24, 0, 6)
+close.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+close.Text = ""
+Instance.new("UICorner", close).CornerRadius = UDim.new(0, 4)
+
+btn.Size = UDim2.new(0, 42, 0, 22)
+btn.Position = UDim2.new(0, 15, 0, 45)
+btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+btn.Text = ""
+Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
+
+dot.Size = UDim2.new(0, 18, 0, 18)
+dot.Position = UDim2.new(0, 2, 0.5, -9)
+dot.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+Instance.new("UICorner", dot).CornerRadius = UDim.new(0, 3)
+
+hint.Size = UDim2.new(0, 110, 0, 22)
+hint.Position = UDim2.new(0, 65, 0, 45)
+hint.BackgroundTransparency = 1
+hint.Text = "Status: OFF [G]"
+hint.TextColor3 = Color3.fromRGB(150, 150, 150)
+hint.Font = Enum.Font.Gotham
+hint.TextSize = 12
+hint.TextXAlignment = Enum.TextXAlignment.Left
+
+local dragging, dStart, sPos
+top.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = true dStart = i.Position sPos = main.Position end end)
+uis.InputChanged:Connect(function(i) if dragging and i.UserInputType == Enum.UserInputType.MouseMovement then local delta = i.Position - dStart main.Position = UDim2.new(sPos.X.Scale, sPos.X.Offset + delta.X, sPos.Y.Scale, sPos.Y.Offset + delta.Y) end end)
+uis.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end end)
+
+local u6, u7, u8
+local u9 = false
+local u10 = {}
+
+local function setup()
+    u6 = lp.Character or lp.CharacterAdded:Wait()
+    u7 = u6:WaitForChild('Humanoid')
+    u8 = u6:WaitForChild('HumanoidRootPart')
+    u10 = {}
+    for _, v in pairs(u6:GetDescendants()) do
+        if v:IsA('BasePart') and v.Transparency == 0 then
+            table.insert(u10, v)
+        end
+    end
+end
+
+local function toggle()
+    u9 = not u9
+    if _G.InvData then _G.InvData.Active = u9 end
+    btn.BackgroundColor3 = u9 and Color3.fromRGB(50, 100, 255) or Color3.fromRGB(30, 30, 30)
+    dot:TweenPosition(u9 and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9), "Out", "Quad", 0.1)
+    hint.Text = u9 and "Status: ON [G]" or "Status: OFF [G]"
+    for _, v in pairs(u10) do
+        if v.Parent then v.Transparency = u9 and 0.5 or 0 end
+    end
+end
+
+btn.MouseButton1Click:Connect(toggle)
+close.MouseButton1Click:Connect(function()
+    u9 = false
+    if _G.InvData then
+        for _, v in pairs(_G.InvData.Conns) do v:Disconnect() end
+        _G.InvData = nil
+    end
+    gui:Destroy()
+end)
+
+setup()
+
+local conns = {}
+conns[1] = uis.InputBegan:Connect(function(i, g)
+    if not g and i.KeyCode == Enum.KeyCode.G then toggle() end
+end)
+
+conns[2] = rs.Heartbeat:Connect(function()
+    if u9 and u8 and u7 then
+        local _CFrame = u8.CFrame
+        local _CameraOffset = u7.CameraOffset
+        local v40 = _CFrame * CFrame.new(0, -200000, 0)
+        local _Position = v40:ToObjectSpace(CFrame.new(_CFrame.Position)).Position
+        u8.CFrame = v40
+        u7.CameraOffset = _Position
+        rs.RenderStepped:Wait()
+        if u8 and u7 then
+            u8.CFrame = _CFrame
+            u7.CameraOffset = _CameraOffset
+        end
+    end
+end)
+
+lp.CharacterAdded:Connect(function()
+    u9 = false
+    if _G.InvData then _G.InvData.Active = false end
+    task.wait(0.5)
+    setup()
+    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    dot.Position = UDim2.new(0, 2, 0.5, -9)
+    hint.Text = "Status: OFF [G]"
+end)
+
+_G.InvData = {Active = u9, Conns = conns, Gui = gui}
