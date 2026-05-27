@@ -2,7 +2,11 @@ local lp = game:GetService("Players").LocalPlayer
 local rs = game:GetService("RunService")
 local uis = game:GetService("UserInputService")
 
+local old = lp.PlayerGui:FindFirstChild("???")
+if old then old:Destroy() end
+
 local gui = Instance.new("ScreenGui", lp.PlayerGui)
+gui.Name = "???"
 local main = Instance.new("Frame", gui)
 local corner = Instance.new("UICorner", main)
 local top = Instance.new("Frame", main)
@@ -19,7 +23,6 @@ local sInput = Instance.new("TextBox", main)
 main.Size = UDim2.new(0, 220, 0, 160)
 main.Position = UDim2.new(0.7, 0, 0.25, 0)
 main.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
-main.BorderSizePixel = 0
 corner.CornerRadius = UDim.new(0, 6)
 
 top.Size = UDim2.new(1, 0, 0, 40)
@@ -38,7 +41,12 @@ close.Size = UDim2.new(0, 20, 0, 20)
 close.Position = UDim2.new(1, -30, 0, 10)
 close.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
 close.Text = ""
+close.TextColor3 = Color3.fromRGB(0, 0, 0)
+close.Font = "GothamBold"
+close.TextSize = 14
 Instance.new("UICorner", close).CornerRadius = UDim.new(0, 4)
+close.MouseEnter:Connect(function() close.Text = "x" end)
+close.MouseLeave:Connect(function() close.Text = "" end)
 close.MouseButton1Click:Connect(function() gui:Destroy() end)
 
 local function makeTog(btn, dot, y, name)
@@ -69,11 +77,9 @@ sBack.Size = UDim2.new(0, 135, 0, 4)
 sBack.Position = UDim2.new(0, 15, 0, 130)
 sBack.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 Instance.new("UICorner", sBack)
-
 sFill.Size = UDim2.new(0, 0, 1, 0)
 sFill.BackgroundColor3 = Color3.fromRGB(50, 100, 255)
 Instance.new("UICorner", sFill)
-
 sHandle.Size = UDim2.new(0, 8, 0, 16)
 sHandle.Position = UDim2.new(1, -4, 0.5, -8)
 sHandle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
@@ -115,16 +121,9 @@ local function update(v)
     sInput.Text = tostring(speed)
     sFill.Size = UDim2.new((speed - 30) / 270, 0, 1, 0)
 end
-
 update(50)
 
-sBack.InputBegan:Connect(function(i)
-    if i.UserInputType == Enum.UserInputType.MouseButton1 then
-        sliding = true
-        local x = math.clamp((i.Position.X - sBack.AbsolutePosition.X) / sBack.AbsoluteSize.X, 0, 1)
-        update(math.floor(30 + (x * 270)))
-    end
-end)
+sBack.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then sliding = true end end)
 uis.InputChanged:Connect(function(i)
     if sliding and i.UserInputType == Enum.UserInputType.MouseMovement then
         local x = math.clamp((i.Position.X - sBack.AbsolutePosition.X) / sBack.AbsoluteSize.X, 0, 1)
@@ -132,11 +131,7 @@ uis.InputChanged:Connect(function(i)
     end
 end)
 uis.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then sliding = false end end)
-
-sInput.FocusLost:Connect(function()
-    local n = tonumber(sInput.Text)
-    if n then update(n) else update(speed) end
-end)
+sInput.FocusLost:Connect(function() local n = tonumber(sInput.Text) update(n or speed) end)
 
 flyBtn.MouseButton1Click:Connect(function()
     flying = not flying
@@ -149,13 +144,14 @@ flyBtn.MouseButton1Click:Connect(function()
         bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
         bg.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
         task.spawn(function()
-            while flying do
+            while flying and gui.Parent do
                 rs.RenderStepped:Wait()
                 lp.Character.Humanoid.PlatformStand = true
                 local cam = workspace.CurrentCamera.CFrame
                 bv.Velocity = ((cam.LookVector * (ctrl.f + ctrl.b)) + (cam * CFrame.new(ctrl.l + ctrl.r, (ctrl.f + ctrl.b) * 0.2, 0).Position - cam.Position)) * speed
                 bg.CFrame = cam
             end
+            flying = false
             bv:Destroy() bg:Destroy()
             if lp.Character:FindFirstChild("Humanoid") then lp.Character.Humanoid.PlatformStand = false end
         end)
@@ -169,7 +165,7 @@ clipBtn.MouseButton1Click:Connect(function()
 end)
 
 rs.Stepped:Connect(function()
-    if noclip and lp.Character then
+    if noclip and lp.Character and gui.Parent then
         for _, v in pairs(lp.Character:GetDescendants()) do
             if v:IsA("BasePart") then v.CanCollide = false end
         end
