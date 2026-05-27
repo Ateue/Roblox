@@ -2,14 +2,19 @@ local lp = game:GetService("Players").LocalPlayer
 local rs = game:GetService("RunService")
 local uis = game:GetService("UserInputService")
 
-local old = lp.PlayerGui:FindFirstChild("???")
+local old = (gethui and gethui():FindFirstChild("FLIGHT_V2")) or lp.PlayerGui:FindFirstChild("FLIGHT_V2")
 if old then old:Destroy() end
 
-local gui = Instance.new("ScreenGui", lp.PlayerGui)
-gui.Name = "???"
+local gui = Instance.new("ScreenGui")
+gui.Name = "FLIGHT_V2"
+gui.ResetOnSpawn = false
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+gui.Parent = (gethui and gethui()) or lp:WaitForChild("PlayerGui")
+
 local main = Instance.new("Frame", gui)
 local corner = Instance.new("UICorner", main)
 local top = Instance.new("Frame", main)
+local title = Instance.new("TextLabel", top)
 local close = Instance.new("TextButton", main)
 local flyBtn = Instance.new("TextButton", main)
 local flyDot = Instance.new("Frame", flyBtn)
@@ -22,12 +27,11 @@ local sInput = Instance.new("TextBox", main)
 
 main.Size = UDim2.new(0, 220, 0, 160)
 main.Position = UDim2.new(0.7, 0, 0.25, 0)
-main.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 corner.CornerRadius = UDim.new(0, 6)
 
 top.Size = UDim2.new(1, 0, 0, 40)
 top.BackgroundTransparency = 1
-local title = Instance.new("TextLabel", top)
 title.Size = UDim2.new(1, 0, 1, 0)
 title.Position = UDim2.new(0, 15, 0, 0)
 title.Text = "FLIGHT"
@@ -41,9 +45,6 @@ close.Size = UDim2.new(0, 20, 0, 20)
 close.Position = UDim2.new(1, -30, 0, 10)
 close.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
 close.Text = ""
-close.TextColor3 = Color3.fromRGB(0, 0, 0)
-close.Font = "GothamBold"
-close.TextSize = 14
 Instance.new("UICorner", close).CornerRadius = UDim.new(0, 4)
 close.MouseEnter:Connect(function() close.Text = "x" end)
 close.MouseLeave:Connect(function() close.Text = "" end)
@@ -99,22 +100,14 @@ st.ApplyStrokeMode = "Border"
 st.Thickness = 1.2
 
 local drag, dStart, sPos
-top.InputBegan:Connect(function(i)
-    if i.UserInputType == Enum.UserInputType.MouseButton1 then
-        drag = true dStart = i.Position sPos = main.Position
-    end
-end)
-uis.InputChanged:Connect(function(i)
-    if drag and i.UserInputType == Enum.UserInputType.MouseMovement then
-        local delta = i.Position - dStart
-        main.Position = UDim2.new(sPos.X.Scale, sPos.X.Offset + delta.X, sPos.Y.Scale, sPos.Y.Offset + delta.Y)
-    end
-end)
+top.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = true dStart = i.Position sPos = main.Position end end)
+uis.InputChanged:Connect(function(i) if drag and i.UserInputType == Enum.UserInputType.MouseMovement then local delta = i.Position - dStart main.Position = UDim2.new(sPos.X.Scale, sPos.X.Offset + delta.X, sPos.Y.Scale, sPos.Y.Offset + delta.Y) end end)
 uis.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end end)
 
 local flying, noclip, speed = false, false, 50
 local ctrl = {f = 0, b = 0, l = 0, r = 0}
 local sliding = false
+local bv, bg
 
 local function update(v)
     speed = math.clamp(v, 30, 300)
@@ -124,38 +117,21 @@ end
 update(50)
 
 sBack.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then sliding = true end end)
-uis.InputChanged:Connect(function(i)
-    if sliding and i.UserInputType == Enum.UserInputType.MouseMovement then
-        local x = math.clamp((i.Position.X - sBack.AbsolutePosition.X) / sBack.AbsoluteSize.X, 0, 1)
-        update(math.floor(30 + (x * 270)))
-    end
-end)
+uis.InputChanged:Connect(function(i) if sliding and i.UserInputType == Enum.UserInputType.MouseMovement then local x = math.clamp((i.Position.X - sBack.AbsolutePosition.X) / sBack.AbsoluteSize.X, 0, 1) update(math.floor(30 + (x * 270))) end end)
 uis.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then sliding = false end end)
 sInput.FocusLost:Connect(function() local n = tonumber(sInput.Text) update(n or speed) end)
+
+local function cleanFly()
+    if bv then bv:Destroy() bv = nil end
+    if bg then bg:Destroy() bg = nil end
+    if lp.Character and lp.Character:FindFirstChild("Humanoid") then lp.Character.Humanoid.PlatformStand = false end
+end
 
 flyBtn.MouseButton1Click:Connect(function()
     flying = not flying
     flyBtn.BackgroundColor3 = flying and Color3.fromRGB(50, 100, 255) or Color3.fromRGB(30, 30, 30)
     flyDot:TweenPosition(flying and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9), "Out", "Quad", 0.1)
-    if flying then
-        local root = lp.Character:WaitForChild("HumanoidRootPart")
-        local bv = Instance.new("BodyVelocity", root)
-        local bg = Instance.new("BodyGyro", root)
-        bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
-        bg.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
-        task.spawn(function()
-            while flying and gui.Parent do
-                rs.RenderStepped:Wait()
-                lp.Character.Humanoid.PlatformStand = true
-                local cam = workspace.CurrentCamera.CFrame
-                bv.Velocity = ((cam.LookVector * (ctrl.f + ctrl.b)) + (cam * CFrame.new(ctrl.l + ctrl.r, (ctrl.f + ctrl.b) * 0.2, 0).Position - cam.Position)) * speed
-                bg.CFrame = cam
-            end
-            flying = false
-            bv:Destroy() bg:Destroy()
-            if lp.Character:FindFirstChild("Humanoid") then lp.Character.Humanoid.PlatformStand = false end
-        end)
-    end
+    if not flying then cleanFly() end
 end)
 
 clipBtn.MouseButton1Click:Connect(function()
@@ -164,8 +140,29 @@ clipBtn.MouseButton1Click:Connect(function()
     clipDot:TweenPosition(noclip and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9), "Out", "Quad", 0.1)
 end)
 
+rs.RenderStepped:Connect(function()
+    if flying and lp.Character and lp.Character:FindFirstChild("HumanoidRootPart") and lp.Character:FindFirstChild("Humanoid") then
+        local root = lp.Character.HumanoidRootPart
+        local hum = lp.Character.Humanoid
+        hum.PlatformStand = true
+        if not bv then
+            bv = Instance.new("BodyVelocity", root)
+            bv.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+        end
+        if not bg then
+            bg = Instance.new("BodyGyro", root)
+            bg.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+        end
+        local cam = workspace.CurrentCamera.CFrame
+        bv.Velocity = ((cam.LookVector * (ctrl.f + ctrl.b)) + (cam * CFrame.new(ctrl.l + ctrl.r, (ctrl.f + ctrl.b) * 0.2, 0).Position - cam.Position)) * speed
+        bg.CFrame = cam
+    elseif not flying and bv then
+        cleanFly()
+    end
+end)
+
 rs.Stepped:Connect(function()
-    if noclip and lp.Character and gui.Parent then
+    if noclip and lp.Character then
         for _, v in pairs(lp.Character:GetDescendants()) do
             if v:IsA("BasePart") then v.CanCollide = false end
         end
@@ -179,9 +176,15 @@ uis.InputBegan:Connect(function(i, g)
     elseif i.KeyCode == Enum.KeyCode.A then ctrl.l = -1
     elseif i.KeyCode == Enum.KeyCode.D then ctrl.r = 1 end
 end)
+
 uis.InputEnded:Connect(function(i)
     if i.KeyCode == Enum.KeyCode.W then ctrl.f = 0
     elseif i.KeyCode == Enum.KeyCode.S then ctrl.b = 0
     elseif i.KeyCode == Enum.KeyCode.A then ctrl.l = 0
     elseif i.KeyCode == Enum.KeyCode.D then ctrl.r = 0 end
+end)
+
+lp.CharacterAdded:Connect(function()
+    task.wait(0.1)
+    if flying then cleanFly() end
 end)
