@@ -1,30 +1,66 @@
-local RunService = game:GetService("RunService")
-local PlayerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+local lp = game:GetService("Players").LocalPlayer
+local uis = game:GetService("UserInputService")
 
-local gui = Instance.new("ScreenGui", PlayerGui)
-gui.Name = "???"
-gui.IgnoreGuiInset = true
+local old = (gethui and gethui():FindFirstChild("ClockGui")) or game:GetService("CoreGui"):FindFirstChild("ClockGui") or lp.PlayerGui:FindFirstChild("ClockGui")
+if old then old:Destroy() end
 
-local f = Instance.new("Frame", gui)
-f.Size = UDim2.new(0, 110, 0, 36)
-f.Position = UDim2.new(0, 15, 0, 75)
-f.BackgroundColor3 = Color3.fromRGB(5, 5, 5)
-f.BackgroundTransparency = 0.2
+local gui = Instance.new("ScreenGui")
+gui.Name = "ClockGui"
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 999
+gui.Parent = (gethui and gethui()) or game:GetService("CoreGui") or lp:WaitForChild("PlayerGui")
 
-Instance.new("UICorner", f).CornerRadius = UDim.new(0, 8)
+local function drag(obj)
+	local dragging, dragStart, startPos
+	obj.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			dragStart = input.Position
+			startPos = obj.Position
+		end
+	end)
+	uis.InputChanged:Connect(function(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local delta = input.Position - dragStart
+			obj.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+	end)
+	uis.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+	end)
+end
 
-local s = Instance.new("UIStroke", f)
-s.Color = Color3.fromRGB(255, 255, 255)
-s.Transparency = 0.6
-s.Thickness = 1.2
+local function style(obj)
+	obj.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	obj.BackgroundTransparency = 0.3
+	obj.BorderSizePixel = 0
+	obj.Font = Enum.Font.GothamBold
+	obj.TextColor3 = Color3.fromRGB(255, 255, 255)
+	obj.TextSize = 15
+	local corner = Instance.new("UICorner", obj)
+	corner.CornerRadius = UDim.new(0, 6)
+	local stroke = Instance.new("UIStroke", obj)
+	stroke.Color = Color3.fromRGB(255, 255, 255)
+	stroke.Transparency = 0.8
+	stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+end
 
-local l = Instance.new("TextLabel", f)
-l.Size = UDim2.new(1, 0, 1, 0)
-l.BackgroundTransparency = 1
-l.TextColor3 = Color3.fromRGB(230, 230, 230)
-l.TextSize = 16
-l.Font = Enum.Font.GothamBold
+local tLabel = Instance.new("TextLabel", gui)
+tLabel.Size = UDim2.new(0, 90, 0, 30)
+tLabel.Position = UDim2.new(0.02, 0, 0.7, 0)
+style(tLabel)
+drag(tLabel)
 
-RunService.RenderStepped:Connect(function()
-	l.Text = os.date("%H:%M:%S")
+local dLabel = Instance.new("TextLabel", gui)
+dLabel.Size = UDim2.new(0, 110, 0, 30)
+dLabel.Position = UDim2.new(0.02, 0, 0.74, 0)
+style(dLabel)
+drag(dLabel)
+
+task.spawn(function()
+	while task.wait(1) do
+		if not gui.Parent then break end
+		tLabel.Text = os.date("%H:%M:%S")
+		dLabel.Text = os.date("%d/%m/%Y")
+	end
 end)
