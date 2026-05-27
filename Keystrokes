@@ -1,0 +1,154 @@
+local lp = game:GetService("Players").LocalPlayer
+local uis = game:GetService("UserInputService")
+local ts = game:GetService("TweenService")
+local rs = game:GetService("RunService")
+
+local function clear()
+	local old = game:GetService("CoreGui"):FindFirstChild("Keystrokes") or lp.PlayerGui:FindFirstChild("Keystrokes")
+	if old then old:Destroy() end
+end
+clear()
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "Keystrokes"
+gui.Parent = (gethui and gethui()) or game:GetService("CoreGui")
+
+local function drag(obj)
+	local dragging, dragStart, startPos
+	obj.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			dragStart = input.Position
+			startPos = obj.Position
+		end
+	end)
+	uis.InputChanged:Connect(function(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local delta = input.Position - dragStart
+			obj.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+	end)
+	uis.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
+	end)
+end
+
+local function style(obj)
+	obj.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+	obj.BackgroundTransparency = 0.3
+	obj.BorderSizePixel = 0
+	obj.Font = Enum.Font.GothamBold
+	obj.TextColor3 = Color3.fromRGB(255, 255, 255)
+	obj.TextSize = 14
+	local corner = Instance.new("UICorner", obj)
+	corner.CornerRadius = UDim.new(0, 4)
+end
+
+local MainKeys = Instance.new("Frame", gui)
+MainKeys.Size = UDim2.new(0, 110, 0, 145)
+MainKeys.Position = UDim2.new(0.5, -55, 1, -155)
+MainKeys.BackgroundTransparency = 1
+drag(MainKeys)
+
+local W = Instance.new("TextLabel", MainKeys)
+W.Name = "W"
+W.Size = UDim2.new(0, 35, 0, 35)
+W.Position = UDim2.new(0.5, -17, 0, 0)
+W.Text = "W"
+style(W)
+
+local A = Instance.new("TextLabel", MainKeys)
+A.Name = "A"
+A.Size = UDim2.new(0, 35, 0, 35)
+A.Position = UDim2.new(0, 0, 0, 38)
+A.Text = "A"
+style(A)
+
+local S = Instance.new("TextLabel", MainKeys)
+S.Name = "S"
+S.Size = UDim2.new(0, 35, 0, 35)
+S.Position = UDim2.new(0.5, -17, 0, 38)
+S.Text = "S"
+style(S)
+
+local D = Instance.new("TextLabel", MainKeys)
+D.Name = "D"
+D.Size = UDim2.new(0, 35, 0, 35)
+D.Position = UDim2.new(1, -35, 0, 38)
+D.Text = "D"
+style(D)
+
+local LMB = Instance.new("TextLabel", MainKeys)
+LMB.Name = "MouseButton1"
+LMB.Size = UDim2.new(0, 53, 0, 35)
+LMB.Position = UDim2.new(0, 0, 0, 76)
+LMB.Text = "LMB"
+style(LMB)
+
+local RMB = Instance.new("TextLabel", MainKeys)
+RMB.Name = "MouseButton2"
+RMB.Size = UDim2.new(0, 53, 0, 35)
+RMB.Position = UDim2.new(1, -53, 0, 76)
+RMB.Text = "RMB"
+style(RMB)
+
+local Space = Instance.new("TextLabel", MainKeys)
+Space.Name = "Space"
+Space.Size = UDim2.new(0, 110, 0, 25)
+Space.Position = UDim2.new(0, 0, 0, 114)
+Space.Text = "————"
+style(Space)
+
+local CPS = Instance.new("TextLabel", gui)
+CPS.Size = UDim2.new(0, 110, 0, 25)
+CPS.Position = UDim2.new(0.5, -175, 1, -35)
+CPS.Text = "0 | 0 CPS"
+style(CPS)
+drag(CPS)
+
+local FPS = Instance.new("TextLabel", gui)
+FPS.Size = UDim2.new(0, 110, 0, 25)
+FPS.Position = UDim2.new(0.5, 65, 1, -35)
+FPS.Text = "0 FPS"
+style(FPS)
+drag(FPS)
+
+local cL, cR = {}, {}
+local function getCPS(t)
+	local n = os.clock()
+	for i = #t, 1, -1 do
+		if n - t[i] > 1 then table.remove(t, i) end
+	end
+	return #t
+end
+
+uis.InputBegan:Connect(function(i, g)
+	if g then return end
+	local k = MainKeys:FindFirstChild(i.KeyCode.Name) or MainKeys:FindFirstChild(i.UserInputType.Name)
+	if k then
+		ts:Create(k, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(255, 255, 255), TextColor3 = Color3.fromRGB(0, 0, 0)}):Play()
+		if i.UserInputType == Enum.UserInputType.MouseButton1 then table.insert(cL, os.clock())
+		elseif i.UserInputType == Enum.UserInputType.MouseButton2 then table.insert(cR, os.clock()) end
+	end
+end)
+
+uis.InputEnded:Connect(function(i)
+	local k = MainKeys:FindFirstChild(i.KeyCode.Name) or MainKeys:FindFirstChild(i.UserInputType.Name)
+	if k then
+		ts:Create(k, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(10, 10, 10), TextColor3 = Color3.fromRGB(255, 255, 255)}):Play()
+	end
+end)
+
+local frames, last = 0, os.clock()
+local curFps = 0
+
+rs.RenderStepped:Connect(function()
+	frames = frames + 1
+	if os.clock() - last >= 1 then
+		curFps = frames
+		frames = 0
+		last = os.clock()
+	end
+	CPS.Text = getCPS(cL) .. " | " .. getCPS(cR) .. " CPS"
+	FPS.Text = curFps .. " FPS"
+end)
