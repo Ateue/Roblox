@@ -13,7 +13,7 @@ if _G.ArenaData then
 end
 
 local gui = Instance.new("ScreenGui")
-gui.Name = "ARENA_V3_FIX"
+gui.Name = "ARENA_V3_STABLE"
 gui.ResetOnSpawn = false
 gui.DisplayOrder = 999
 gui.Parent = (gethui and gethui()) or lp:WaitForChild("PlayerGui")
@@ -87,6 +87,7 @@ local damageRemote = reps:WaitForChild("ZombieRemotes"):WaitForChild("ZombieDama
 local GunConfig = require(reps:WaitForChild("Data"):WaitForChild("GunConfig"))
 local UpgradeShopData = require(reps:WaitForChild("Data"):WaitForChild("UpgradeShopData"))
 local origRates = {}
+local cachedZombies = nil
 
 for name, gun in pairs(GunConfig.Guns) do origRates[name] = gun.FireRate end
 
@@ -108,9 +109,11 @@ local function setFireRate(state)
 end
 
 local function getZombies()
+    if cachedZombies then return cachedZombies end
     for _, v in pairs(getgc(true)) do
         if type(v) == "table" and rawget(v, "Zombies") and type(v.Zombies) == "table" then
-            return v.Zombies
+            cachedZombies = v.Zombies
+            return cachedZombies
         end
     end
     return nil
@@ -146,7 +149,7 @@ close.MouseButton1Click:Connect(function()
 end)
 
 task.spawn(function()
-    while task.wait(0.1) do
+    while task.wait(0.3) do
         if not gui or not gui.Parent then break end
         if ssOn then
             local h = lp.Character and lp.Character:FindFirstChildOfClass("Humanoid")
@@ -157,7 +160,7 @@ task.spawn(function()
             if zTable then
                 for id, data in pairs(zTable) do
                     if data and data.Health and data.Health > 0 then
-                        damageRemote:FireServer(id, 999999)
+                        damageRemote:FireServer(id, 1000000)
                     end
                 end
             end
