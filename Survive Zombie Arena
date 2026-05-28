@@ -13,7 +13,7 @@ if _G.ArenaData then
 end
 
 local gui = Instance.new("ScreenGui")
-gui.Name = "ARENA_V3"
+gui.Name = "ARENA_V3_FIX"
 gui.ResetOnSpawn = false
 gui.DisplayOrder = 999
 gui.Parent = (gethui and gethui()) or lp:WaitForChild("PlayerGui")
@@ -42,12 +42,12 @@ title.TextSize = 13
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.BackgroundTransparency = 1
 
-close.Size = UDim2.new(0, 18, 0, 18)
-close.Position = UDim2.new(1, -24, 0, 6)
+close.Size = UDim2.new(0, 14, 0, 14)
+close.Position = UDim2.new(1, -22, 0, 8)
 close.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
 close.Text = ""
 close.ZIndex = 10
-Instance.new("UICorner", close).CornerRadius = UDim.new(0, 4)
+Instance.new("UICorner", close).CornerRadius = UDim.new(1, 0)
 
 local function makeTog(y, text)
     local btn = Instance.new("TextButton", main)
@@ -83,7 +83,6 @@ uis.InputChanged:Connect(function(i) if drag and i.UserInputType == Enum.UserInp
 uis.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end end)
 
 local kaOn, ssOn, ifOn = false, false, false
-local zombiesTable = nil
 local damageRemote = reps:WaitForChild("ZombieRemotes"):WaitForChild("ZombieDamage")
 local GunConfig = require(reps:WaitForChild("Data"):WaitForChild("GunConfig"))
 local UpgradeShopData = require(reps:WaitForChild("Data"):WaitForChild("UpgradeShopData"))
@@ -98,10 +97,7 @@ local function setFireRate(state)
         gun.FireRate = state and 0.01 or (origRates[name] or 0.8)
         gun.SoundCooldown = rate
         if state then
-            gun.Automatic = true
-            gun.AutoFire = true
-            gun.HoldToFire = true
-            gun.FullAuto = true
+            gun.Automatic, gun.AutoFire, gun.HoldToFire, gun.FullAuto = true, true, true, true
         end
     end
     for _, weapon in pairs(UpgradeShopData.Weapons) do
@@ -111,17 +107,14 @@ local function setFireRate(state)
     end
 end
 
-local function findZ()
-    local s, c = pcall(function() return require(lp.PlayerScripts.Controllers.ZombieClient) end)
-    if s and c.Zombies then zombiesTable = c.Zombies else
-        for _, v in pairs(getgc(true)) do
-            if type(v) == "table" and rawget(v, "Zombies") and rawget(v, "ZombieModels") then
-                zombiesTable = v.Zombies break
-            end
+local function getZombies()
+    for _, v in pairs(getgc(true)) do
+        if type(v) == "table" and rawget(v, "Zombies") and type(v.Zombies) == "table" then
+            return v.Zombies
         end
     end
+    return nil
 end
-findZ()
 
 kaBtn.MouseButton1Click:Connect(function()
     kaOn = not kaOn
@@ -145,7 +138,7 @@ ifBtn.MouseButton1Click:Connect(function()
 end)
 
 close.MouseButton1Click:Connect(function()
-    kaOn = false ssOn = false ifOn = false
+    kaOn, ssOn, ifOn = false, false, false
     setFireRate(false)
     local h = lp.Character and lp.Character:FindFirstChildOfClass("Humanoid")
     if h then h.HipHeight = 0 end
@@ -153,16 +146,19 @@ close.MouseButton1Click:Connect(function()
 end)
 
 task.spawn(function()
-    while task.wait(0.2) do
+    while task.wait(0.1) do
         if not gui or not gui.Parent then break end
         if ssOn then
             local h = lp.Character and lp.Character:FindFirstChildOfClass("Humanoid")
             if h and h.HipHeight ~= 25 then h.HipHeight = 25 end
         end
-        if kaOn and zombiesTable then
-            for id, data in pairs(zombiesTable) do
-                if data and not data.IsDying and data.Health > 0 then
-                    damageRemote:FireServer(id, math.huge)
+        if kaOn then
+            local zTable = getZombies()
+            if zTable then
+                for id, data in pairs(zTable) do
+                    if data and data.Health and data.Health > 0 then
+                        damageRemote:FireServer(id, 999999)
+                    end
                 end
             end
         end
