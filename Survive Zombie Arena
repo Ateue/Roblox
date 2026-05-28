@@ -1,0 +1,180 @@
+local lp = game:GetService("Players").LocalPlayer
+local rs = game:GetService("RunService")
+local uis = game:GetService("UserInputService")
+local reps = game:GetService("ReplicatedStorage")
+
+if _G.ArenaData then
+    _G.ArenaData.KA = false
+    _G.ArenaData.SS = false
+    _G.ArenaData.IF = false
+    task.wait()
+    if _G.ArenaData.Gui then _G.ArenaData.Gui:Destroy() end
+    _G.ArenaData = nil
+end
+
+local gui = Instance.new("ScreenGui")
+gui.Name = "ARENA_V3"
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 999
+gui.Parent = (gethui and gethui()) or lp:WaitForChild("PlayerGui")
+
+local main = Instance.new("Frame", gui)
+local corner = Instance.new("UICorner", main)
+local top = Instance.new("Frame", main)
+local title = Instance.new("TextLabel", top)
+local close = Instance.new("TextButton", main)
+
+main.Size = UDim2.new(0, 200, 0, 145)
+main.Position = UDim2.new(0.5, -100, 0.1, 0)
+main.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+main.BorderSizePixel = 0
+main.Active = true
+corner.CornerRadius = UDim.new(0, 4)
+
+top.Size = UDim2.new(1, 0, 0, 30)
+top.BackgroundTransparency = 1
+title.Size = UDim2.new(1, 0, 1, 0)
+title.Position = UDim2.new(0, 12, 0, 0)
+title.Text = "Survive Zombie Arena"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.GothamBold
+title.TextSize = 13
+title.TextXAlignment = Enum.TextXAlignment.Left
+title.BackgroundTransparency = 1
+
+close.Size = UDim2.new(0, 18, 0, 18)
+close.Position = UDim2.new(1, -24, 0, 6)
+close.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+close.Text = ""
+close.ZIndex = 10
+Instance.new("UICorner", close).CornerRadius = UDim.new(0, 4)
+
+local function makeTog(y, text)
+    local btn = Instance.new("TextButton", main)
+    local dot = Instance.new("Frame", btn)
+    local lab = Instance.new("TextLabel", main)
+    btn.Size = UDim2.new(0, 42, 0, 22)
+    btn.Position = UDim2.new(0, 15, 0, y)
+    btn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    btn.Text = ""
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 4)
+    dot.Size = UDim2.new(0, 18, 0, 18)
+    dot.Position = UDim2.new(0, 2, 0.5, -9)
+    dot.BackgroundColor3 = Color3.fromRGB(200, 200, 200)
+    Instance.new("UICorner", dot).CornerRadius = UDim.new(0, 3)
+    lab.Size = UDim2.new(0, 110, 0, 22)
+    lab.Position = UDim2.new(0, 65, 0, y)
+    lab.BackgroundTransparency = 1
+    lab.Text = text
+    lab.TextColor3 = Color3.fromRGB(200, 200, 200)
+    lab.Font = Enum.Font.Gotham
+    lab.TextSize = 13
+    lab.TextXAlignment = Enum.TextXAlignment.Left
+    return btn, dot
+end
+
+local kaBtn, kaDot = makeTog(40, "Kill Aura")
+local ssBtn, ssDot = makeTog(72, "Safe Spot")
+local ifBtn, ifDot = makeTog(104, "Inf Fire Rate")
+
+local drag, dStart, sPos
+top.InputBegan:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = true dStart = i.Position sPos = main.Position end end)
+uis.InputChanged:Connect(function(i) if drag and i.UserInputType == Enum.UserInputType.MouseMovement then local delta = i.Position - dStart main.Position = UDim2.new(sPos.X.Scale, sPos.X.Offset + delta.X, sPos.Y.Scale, sPos.Y.Offset + delta.Y) end end)
+uis.InputEnded:Connect(function(i) if i.UserInputType == Enum.UserInputType.MouseButton1 then drag = false end end)
+
+local kaOn, ssOn, ifOn = false, false, false
+local zombiesTable = nil
+local damageRemote = reps:WaitForChild("ZombieRemotes"):WaitForChild("ZombieDamage")
+local GunConfig = require(reps:WaitForChild("Data"):WaitForChild("GunConfig"))
+local UpgradeShopData = require(reps:WaitForChild("Data"):WaitForChild("UpgradeShopData"))
+local origRates = {}
+
+for name, gun in pairs(GunConfig.Guns) do origRates[name] = gun.FireRate end
+
+local function setFireRate(state)
+    local rate = state and 0.01 or 0.8
+    GunConfig.Defaults.FireRate = rate
+    for name, gun in pairs(GunConfig.Guns) do
+        gun.FireRate = state and 0.01 or (origRates[name] or 0.8)
+        gun.SoundCooldown = rate
+        if state then
+            gun.Automatic = true
+            gun.AutoFire = true
+            gun.HoldToFire = true
+            gun.FullAuto = true
+        end
+    end
+    for _, weapon in pairs(UpgradeShopData.Weapons) do
+        if weapon.Tiers then
+            for _, tier in pairs(weapon.Tiers) do tier.FireRate = rate end
+        end
+    end
+end
+
+local function findZ()
+    local s, c = pcall(function() return require(lp.PlayerScripts.Controllers.ZombieClient) end)
+    if s and c.Zombies then zombiesTable = c.Zombies else
+        for _, v in pairs(getgc(true)) do
+            if type(v) == "table" and rawget(v, "Zombies") and rawget(v, "ZombieModels") then
+                zombiesTable = v.Zombies break
+            end
+        end
+    end
+end
+findZ()
+
+kaBtn.MouseButton1Click:Connect(function()
+    kaOn = not kaOn
+    kaBtn.BackgroundColor3 = kaOn and Color3.fromRGB(50, 100, 255) or Color3.fromRGB(30, 30, 30)
+    kaDot:TweenPosition(kaOn and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9), "Out", "Quad", 0.1)
+end)
+
+ssBtn.MouseButton1Click:Connect(function()
+    ssOn = not ssOn
+    ssBtn.BackgroundColor3 = ssOn and Color3.fromRGB(50, 100, 255) or Color3.fromRGB(30, 30, 30)
+    ssDot:TweenPosition(ssOn and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9), "Out", "Quad", 0.1)
+    local h = lp.Character and lp.Character:FindFirstChildOfClass("Humanoid")
+    if h then h.HipHeight = ssOn and 25 or 0 end
+end)
+
+ifBtn.MouseButton1Click:Connect(function()
+    ifOn = not ifOn
+    ifBtn.BackgroundColor3 = ifOn and Color3.fromRGB(50, 100, 255) or Color3.fromRGB(30, 30, 30)
+    ifDot:TweenPosition(ifOn and UDim2.new(1, -20, 0.5, -9) or UDim2.new(0, 2, 0.5, -9), "Out", "Quad", 0.1)
+    setFireRate(ifOn)
+end)
+
+close.MouseButton1Click:Connect(function()
+    kaOn = false ssOn = false ifOn = false
+    setFireRate(false)
+    local h = lp.Character and lp.Character:FindFirstChildOfClass("Humanoid")
+    if h then h.HipHeight = 0 end
+    gui:Destroy()
+end)
+
+task.spawn(function()
+    while task.wait(0.2) do
+        if not gui or not gui.Parent then break end
+        if ssOn then
+            local h = lp.Character and lp.Character:FindFirstChildOfClass("Humanoid")
+            if h and h.HipHeight ~= 25 then h.HipHeight = 25 end
+        end
+        if kaOn and zombiesTable then
+            for id, data in pairs(zombiesTable) do
+                if data and not data.IsDying and data.Health > 0 then
+                    damageRemote:FireServer(id, math.huge)
+                end
+            end
+        end
+    end
+end)
+
+lp.CharacterAdded:Connect(function()
+    task.wait(1)
+    if ssOn then
+        local h = lp.Character and lp.Character:FindFirstChildOfClass("Humanoid")
+        if h then h.HipHeight = 25 end
+    end
+end)
+
+_G.ArenaData = {Gui = gui, KA = kaOn, SS = ssOn, IF = ifOn}
