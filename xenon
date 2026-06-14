@@ -1507,7 +1507,7 @@ end
 print("Passed all hooks!")
 
 --// Library
-local Library = loadstring(game:HttpGet("https://pastebin.com/raw/SbuuZiTS"))()
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Ateue/Roblox/refs/heads/main/XenonUI"))()
 
 local UI = Library.UI("Xenon V4 - ALPHA")
 local Credits = UI:Tab("Credits & Info", 6026568227)
