@@ -189,9 +189,9 @@ local CurrentCamera: Camera = cloneref(workspace.CurrentCamera);
 local ProtectGui = protect_gui or protectgui or (syn and syn.protect_gui) or function(s) return s; end;
 local GlobalWindow = Instance.new('ScreenGui');
 local ManualTween = TweenInfo.new(0.1);
-local SlowyTween = TweenInfo.new(0.22,Enum.EasingStyle.Quad,Enum.EasingDirection.Out);
-local FastTween = TweenInfo.new(0.08);
-local VSlowTween = TweenInfo.new(0.45,Enum.EasingStyle.Quint,Enum.EasingDirection.Out);
+local SlowyTween = TweenInfo.new(0.175);
+local FastTween = TweenInfo.new(0.05);
+local VSlowTween = TweenInfo.new(0.5,Enum.EasingStyle.Quint);
 local Encryption = {};
 
 Stereo.UserProfile = Players:GetUserThumbnailAsync(LocalPlayer.UserId , Enum.ThumbnailType.HeadShot , Enum.ThumbnailSize.Size150x150)
@@ -217,8 +217,8 @@ Stereo.Scales = {
 Stereo.IconColor = Color3.fromRGB(255, 255, 255);
 Stereo.ScreenGui = GlobalWindow;
 Stereo.Flags = {};
-Stereo.AccentColor = Color3.fromRGB(255, 61, 127);
-Stereo.MainColor = Color3.fromRGB(13, 15, 22);
+Stereo.AccentColor = Color3.fromRGB(139, 92, 246);
+Stereo.MainColor = Color3.fromRGB(10, 11, 17);
 Stereo.RegisiteryColor = {};
 Stereo.NameRegisitry = {};
 Stereo.IsMosueOverOtherFrame = false;
@@ -1284,7 +1284,7 @@ function Stereo:CreateOptionWindow(Frame: Frame , Zindex)
 	OptionHandler.Name = Stereo.RandomString();
 	OptionHandler.Parent = Stereo.ScreenGui
 	OptionHandler.AnchorPoint = Vector2.new(0, 0)
-	OptionHandler.BackgroundColor3 = Color3.fromRGB(20, 23, 34)
+	OptionHandler.BackgroundColor3 = Color3.fromRGB(17, 19, 28)
 	OptionHandler.BackgroundTransparency = 0.035
 	OptionHandler.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	OptionHandler.BorderSizePixel = 0
@@ -1293,7 +1293,7 @@ function Stereo:CreateOptionWindow(Frame: Frame , Zindex)
 	OptionHandler.Size = UDim2.new(0, 220, 0, 75)
 	OptionHandler.ZIndex = Zindex + 9
 
-	UICorner.CornerRadius = UDim.new(0, 12)
+	UICorner.CornerRadius = UDim.new(0, 10)
 	UICorner.Parent = OptionHandler
 
 	UIListLayout.Parent = OptionHandler
@@ -1301,7 +1301,7 @@ function Stereo:CreateOptionWindow(Frame: Frame , Zindex)
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
 	UIStroke.Transparency = 0.650
-	UIStroke.Color = Color3.fromRGB(46, 52, 74)
+	UIStroke.Color = Color3.fromRGB(53, 57, 76)
 	UIStroke.Parent = OptionHandler
 
 	Stereo:AddSignal(UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(LPH_NO_VIRTUALIZE(function()
@@ -1425,7 +1425,7 @@ function Stereo:CreateColorPicker(HandleFrame: Frame)
 	ColorPickerHandler.Name = Stereo.RandomString();
 	ColorPickerHandler.Parent = Stereo.ScreenGui
 	ColorPickerHandler.AnchorPoint = Vector2.new(0, 0)
-	ColorPickerHandler.BackgroundColor3 = Color3.fromRGB(20, 23, 34)
+	ColorPickerHandler.BackgroundColor3 = Color3.fromRGB(17, 19, 28)
 	ColorPickerHandler.BackgroundTransparency = 0.035
 	ColorPickerHandler.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ColorPickerHandler.BorderSizePixel = 0
@@ -1449,11 +1449,11 @@ function Stereo:CreateColorPicker(HandleFrame: Frame)
 		end;
 	end)));
 
-	UICorner.CornerRadius = UDim.new(0, 12)
+	UICorner.CornerRadius = UDim.new(0, 10)
 	UICorner.Parent = ColorPickerHandler
 
 	UIStroke.Transparency = 0.650
-	UIStroke.Color = Color3.fromRGB(46, 52, 74)
+	UIStroke.Color = Color3.fromRGB(53, 57, 76)
 	UIStroke.Parent = ColorPickerHandler
 
 	SaViMap.Name = Stereo.RandomString();
@@ -1523,7 +1523,7 @@ function Stereo:CreateColorPicker(HandleFrame: Frame)
 
 	RGBLabel.Name = Stereo.RandomString();
 	RGBLabel.Parent = ColorPickerHandler
-	RGBLabel.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+	RGBLabel.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 	RGBLabel.BackgroundTransparency = 0.750
 	RGBLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	RGBLabel.BorderSizePixel = 0
@@ -1776,13 +1776,12 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 
 		local Toggle = Instance.new("Frame")
 		local UICorner = Instance.new("UICorner")
-		local ToggleGradient = Instance.new("UIGradient")
 		local Circle = Instance.new("Frame")
 		local UICorner_2 = Instance.new("UICorner")
 
 		Toggle.Name = Stereo.RandomString();
 		Toggle.Parent = Handler
-		Toggle.BackgroundColor3 = Color3.fromRGB(30, 33, 50)
+		Toggle.BackgroundColor3 = Color3.fromRGB(32, 35, 49)
 		Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Toggle.BorderSizePixel = 0
 		Toggle.ClipsDescendants = true
@@ -1804,11 +1803,6 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 		Circle.Size = UDim2.new(0, 16, 0, 16)
 		Circle.ZIndex = ZINdex + 14
 
-		ToggleGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Stereo.AccentColor), ColorSequenceKeypoint.new(1, Color3.fromRGB(183, 40, 90))}
-		ToggleGradient.Rotation = 90
-		ToggleGradient.Transparency = 1
-		ToggleGradient.Parent = Toggle
-
 		UICorner_2.CornerRadius = UDim.new(1, 0)
 		UICorner_2.Parent = Circle
 
@@ -1823,10 +1817,6 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 					BackgroundColor3 = Stereo.AccentColor
 				})
 
-				Stereo.PlayAnimate(ToggleGradient,SlowyTween,{
-					Transparency = 0
-				})
-
 				Stereo.PlayAnimate(Circle,SlowyTween,{
 					BackgroundColor3 = Color3.fromRGB(255, 255, 255),
 					BackgroundTransparency = 0,
@@ -1835,11 +1825,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 			else
 				Stereo.PlayAnimate(Toggle,SlowyTween,{
 					BackgroundTransparency = 0,
-					BackgroundColor3 = Color3.fromRGB(30, 33, 50)
-				})
-
-				Stereo.PlayAnimate(ToggleGradient,SlowyTween,{
-					Transparency = 1
+					BackgroundColor3 = Color3.fromRGB(32, 35, 49)
 				})
 
 				Stereo.PlayAnimate(Circle,SlowyTween,{
@@ -1856,11 +1842,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 			else
 				Stereo.PlayAnimate(Toggle,SlowyTween,{
 					BackgroundTransparency = 1,
-					BackgroundColor3 = Color3.fromRGB(30, 33, 50)
-				})
-
-				Stereo.PlayAnimate(ToggleGradient,SlowyTween,{
-					Transparency = 1
+					BackgroundColor3 = Color3.fromRGB(32, 35, 49)
 				})
 
 				Stereo.PlayAnimate(Circle,SlowyTween,{
@@ -1961,7 +1943,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 
 		Slider.Name = Stereo.RandomString();
 		Slider.Parent = Handler
-		Slider.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+		Slider.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 		Slider.BackgroundTransparency = 1.000
 		Slider.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Slider.BorderSizePixel = 0
@@ -1976,7 +1958,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 		ValueFrame.Name = Stereo.RandomString();
 		ValueFrame.Parent = Slider
 		ValueFrame.AnchorPoint = Vector2.new(1, 0)
-		ValueFrame.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+		ValueFrame.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 		ValueFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		ValueFrame.BorderSizePixel = 0
 		ValueFrame.ClipsDescendants = true
@@ -1988,7 +1970,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 		UICorner_2.Parent = ValueFrame
 
 		UIStroke.Transparency = 0.650
-		UIStroke.Color = Color3.fromRGB(46, 52, 74)
+		UIStroke.Color = Color3.fromRGB(53, 57, 76)
 		UIStroke.Parent = ValueFrame
 
 		ValueLabel.Name = Stereo.RandomString();
@@ -2239,7 +2221,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 
 		Option.Name = Stereo.RandomString();
 		Option.Parent = Handler
-		Option.BackgroundColor3 = Color3.fromRGB(36, 40, 58)
+		Option.BackgroundColor3 = Color3.fromRGB(33, 35, 48)
 		Option.BackgroundTransparency = 1.000
 		Option.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Option.BorderSizePixel = 0
@@ -2260,7 +2242,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 		Icon.ZIndex = ZINdex + 14
 		Icon.FontFace = Stereo.BuiltInBold
 		Icon.Text = (GearIcon == 1 and 'gear') or (GearIcon == 2 and 'chevron-large-right') or "three-dots-horizontal";
-		Icon.TextColor3 = Color3.fromRGB(214, 218, 236)
+		Icon.TextColor3 = Color3.fromRGB(210, 214, 232)
 		Icon.TextSize = 16.000
 		Icon.TextTransparency = 0.400
 		Icon.TextWrapped = true
@@ -2359,11 +2341,11 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 		ColorPicker.ZIndex = ZINdex + 13
 		ColorPicker.LayoutOrder = -(#Handler:GetChildren() + 5);
 
-		UICorner.CornerRadius = UDim.new(0, 8)
+		UICorner.CornerRadius = UDim.new(0, 4)
 		UICorner.Parent = ColorPicker
 
 		UIStroke.Transparency = 0.650
-		UIStroke.Color = Color3.fromRGB(46, 52, 74)
+		UIStroke.Color = Color3.fromRGB(53, 57, 76)
 		UIStroke.Parent = ColorPicker
 
 		ImageLabel.Parent = ColorPicker
@@ -2480,7 +2462,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 
 		Keybind.Name = Stereo.RandomString();
 		Keybind.Parent = Handler
-		Keybind.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+		Keybind.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 		Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Keybind.BorderSizePixel = 0
 		Keybind.ClipsDescendants = true
@@ -2488,11 +2470,11 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 		Keybind.ZIndex = ZINdex + 13
 		Keybind.LayoutOrder = -(#Handler:GetChildren() + 5);
 
-		UICorner.CornerRadius = UDim.new(0, 9)
+		UICorner.CornerRadius = UDim.new(0, 4)
 		UICorner.Parent = Keybind
 
 		UIStroke.Transparency = 0.650
-		UIStroke.Color = Color3.fromRGB(46, 52, 74)
+		UIStroke.Color = Color3.fromRGB(53, 57, 76)
 		UIStroke.Parent = Keybind
 
 		ValueLabel.Name = Stereo.RandomString();
@@ -2639,7 +2621,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 
 		TextInput.Name = Stereo.RandomString();
 		TextInput.Parent = Handler
-		TextInput.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+		TextInput.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 		TextInput.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		TextInput.BorderSizePixel = 0
 		TextInput.ClipsDescendants = true
@@ -2647,11 +2629,11 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 		TextInput.ZIndex = ZINdex + 13
 		TextInput.LayoutOrder = -(#Handler:GetChildren() + 5);
 
-		UICorner.CornerRadius = UDim.new(0, 9)
+		UICorner.CornerRadius = UDim.new(0, 4)
 		UICorner.Parent = TextInput
 
 		UIStroke.Transparency = 0.650
-		UIStroke.Color = Color3.fromRGB(46, 52, 74)
+		UIStroke.Color = Color3.fromRGB(53, 57, 76)
 		UIStroke.Parent = TextInput
 
 		TextBox.Parent = TextInput
@@ -2754,7 +2736,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 
 		Dropdown.Name = Stereo.RandomString();
 		Dropdown.Parent = Handler
-		Dropdown.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+		Dropdown.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 		Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Dropdown.BorderSizePixel = 0
 		Dropdown.ClipsDescendants = true
@@ -2774,16 +2756,16 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 		DropdownIcon.ZIndex = ZINdex + 14
 		DropdownIcon.FontFace = Stereo.BuiltInBold
 		DropdownIcon.Text = "chevron-small-down"
-		DropdownIcon.TextColor3 = Color3.fromRGB(214, 218, 236)
+		DropdownIcon.TextColor3 = Color3.fromRGB(210, 214, 232)
 		DropdownIcon.TextSize = 16.000
 		DropdownIcon.TextTransparency = 0.250
 		DropdownIcon.TextWrapped = true
 
-		UICorner.CornerRadius = UDim.new(0, 10)
+		UICorner.CornerRadius = UDim.new(0, 4)
 		UICorner.Parent = Dropdown
 
 		UIStroke.Transparency = 0.650
-		UIStroke.Color = Color3.fromRGB(46, 52, 74)
+		UIStroke.Color = Color3.fromRGB(53, 57, 76)
 		UIStroke.Parent = Dropdown
 
 		BasedLabel.Name = Stereo.RandomString();
@@ -2880,7 +2862,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 			DropdownHandler.Name = Stereo.RandomString();
 			DropdownHandler.Parent = Stereo.ScreenGui;
 			DropdownHandler.AnchorPoint = Vector2.new(0.5, 0)
-			DropdownHandler.BackgroundColor3 = Color3.fromRGB(20, 23, 34)
+			DropdownHandler.BackgroundColor3 = Color3.fromRGB(17, 19, 28)
 			DropdownHandler.BackgroundTransparency = 0.5
 			DropdownHandler.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			DropdownHandler.BorderSizePixel = 0
@@ -2905,11 +2887,11 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 				end;
 			end));
 
-			UICorner.CornerRadius = UDim.new(0, 12)
+			UICorner.CornerRadius = UDim.new(0, 10)
 			UICorner.Parent = DropdownHandler
 
-			UIStroke.Transparency = 0.850
-			UIStroke.Color = Color3.fromRGB(46, 52, 74)
+			UIStroke.Transparency = 0.650
+			UIStroke.Color = Color3.fromRGB(53, 57, 76)
 			UIStroke.Parent = DropdownHandler
 
 			DropdownScrollFrame.Name = Stereo.RandomString();
@@ -3042,7 +3024,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 
 				ItemFrame.Name = Stereo.RandomString();
 				ItemFrame.Parent = DropdownLib.RootItem
-				ItemFrame.BackgroundColor3 = Color3.fromRGB(31, 34, 50)
+				ItemFrame.BackgroundColor3 = Color3.fromRGB(25, 27, 38)
 				ItemFrame.BackgroundTransparency = 1.000
 				ItemFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 				ItemFrame.BorderSizePixel = 0
@@ -3065,7 +3047,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 				ItemLabel.TextTransparency = 0.200
 				ItemLabel.TextXAlignment = Enum.TextXAlignment.Left
 
-				UICorner.CornerRadius = UDim.new(0, 8)
+				UICorner.CornerRadius = UDim.new(0, 10)
 				UICorner.Parent = ItemFrame
 				local sizetext = TextService:GetTextSize(ItemLabel.Text , ItemLabel.TextSize,ItemLabel.Font,Vector2.new(math.huge,math.huge));
 
@@ -3087,7 +3069,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 					Icon.ZIndex = ZINdex + 1259
 					Icon.FontFace = Stereo.BuiltInBold;
 					Icon.Text = "check"
-					Icon.TextColor3 = Color3.fromRGB(214, 218, 236)
+					Icon.TextColor3 = Color3.fromRGB(210, 214, 232)
 					Icon.TextSize = 18.000
 					Icon.TextTransparency = 1
 					Icon.TextWrapped = true;
@@ -3143,8 +3125,7 @@ function Stereo:RegisiterHandler(Handler: Frame , Signal)
 
 				table.insert(DropdownLib.Signals,ItemFrame.MouseEnter:Connect(LPH_NO_VIRTUALIZE(function()
 					Stereo.PlayAnimate(ItemFrame , SlowyTween , {
-						BackgroundColor3 = Stereo.AccentColor,
-						BackgroundTransparency = 0.88
+						BackgroundTransparency = 0.1
 					})
 				end)));
 
@@ -3321,7 +3302,7 @@ function Stereo:CreateToolTips(Container: Frame , Name: string , Content: string
 	local Shadow = Stereo:CreateShadow(Tooltips);
 
 	Tooltips.Name = Stereo.RandomString();
-	Tooltips.BackgroundColor3 = Color3.fromRGB(20, 23, 34)
+	Tooltips.BackgroundColor3 = Color3.fromRGB(17, 19, 28)
 	Tooltips.BackgroundTransparency = 0.075
 	Tooltips.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Tooltips.BorderSizePixel = 0
@@ -3330,11 +3311,11 @@ function Stereo:CreateToolTips(Container: Frame , Name: string , Content: string
 	Tooltips.Size = UDim2.new(0,0,0,0)
 	Tooltips.ZIndex = 130
 
-	UICorner.CornerRadius = UDim.new(0, 12)
+	UICorner.CornerRadius = UDim.new(0, 10)
 	UICorner.Parent = Tooltips
 
 	UIStroke.Transparency = 0.650
-	UIStroke.Color = Color3.fromRGB(46, 52, 74)
+	UIStroke.Color = Color3.fromRGB(53, 57, 76)
 	UIStroke.Parent = Tooltips
 
 	TooltipName.Name = Stereo.RandomString();
@@ -3485,7 +3466,7 @@ function Stereo:RegisiterItem(Frame: Frame , Signel)
 
 		BasedFrame.Name = Stereo.RandomString();
 		BasedFrame.Parent = Frame
-		BasedFrame.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+		BasedFrame.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 		BasedFrame.BackgroundTransparency = 1.000
 		BasedFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		BasedFrame.BorderSizePixel = 0
@@ -3513,7 +3494,7 @@ function Stereo:RegisiterItem(Frame: Frame , Signel)
 		LineFrame.Name = Stereo.RandomString();
 		LineFrame.Parent = BasedFrame
 		LineFrame.AnchorPoint = Vector2.new(0.5, 1)
-		LineFrame.BackgroundColor3 = Color3.fromRGB(46, 52, 74)
+		LineFrame.BackgroundColor3 = Color3.fromRGB(53, 57, 76)
 		LineFrame.BackgroundTransparency = 0.650
 		LineFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		LineFrame.BorderSizePixel = 0
@@ -3594,12 +3575,11 @@ function Stereo:RegisiterItem(Frame: Frame , Signel)
 
 		Stereo:AddSignal(BasedFrame.MouseEnter:Connect(LPH_NO_VIRTUALIZE(function()
 			Stereo.PlayAnimate(BasedFrame , SlowyTween , {
-				BackgroundColor3 = Stereo.AccentColor,
-				BackgroundTransparency = 0.92
+				BackgroundTransparency = 0.35
 			});
 
 			Stereo.PlayAnimate(BasedLabel , SlowyTween , {
-				TextTransparency = 0.1
+				TextTransparency = 0.25
 			})
 
 		end)))
@@ -3645,7 +3625,7 @@ function Stereo:RegisiterItem(Frame: Frame , Signel)
 
 		LogRow.Name = Stereo.RandomString();
 		LogRow.Parent = Frame
-		LogRow.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+		LogRow.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 		LogRow.BackgroundTransparency = 1.000
 		LogRow.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		LogRow.BorderSizePixel = 0
@@ -3688,7 +3668,7 @@ function Stereo:RegisiterItem(Frame: Frame , Signel)
 		LineFrame.Name = Stereo.RandomString();
 		LineFrame.Parent = LogRow
 		LineFrame.AnchorPoint = Vector2.new(0.5, 1)
-		LineFrame.BackgroundColor3 = Color3.fromRGB(46, 52, 74)
+		LineFrame.BackgroundColor3 = Color3.fromRGB(53, 57, 76)
 		LineFrame.BackgroundTransparency = 0.650
 		LineFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		LineFrame.BorderSizePixel = 0
@@ -3756,7 +3736,7 @@ function Stereo:RegisiterItem(Frame: Frame , Signel)
 
 		ButtonFrame.Name = Stereo.RandomString();
 		ButtonFrame.Parent = Frame
-		ButtonFrame.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+		ButtonFrame.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 		ButtonFrame.BackgroundTransparency = 1.000
 		ButtonFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		ButtonFrame.BorderSizePixel = 0
@@ -3782,7 +3762,7 @@ function Stereo:RegisiterItem(Frame: Frame , Signel)
 		LineFrame.Name = Stereo.RandomString();
 		LineFrame.Parent = ButtonFrame
 		LineFrame.AnchorPoint = Vector2.new(0.5, 1)
-		LineFrame.BackgroundColor3 = Color3.fromRGB(46, 52, 74)
+		LineFrame.BackgroundColor3 = Color3.fromRGB(53, 57, 76)
 		LineFrame.BackgroundTransparency = 0.650
 		LineFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		LineFrame.BorderSizePixel = 0
@@ -3804,7 +3784,7 @@ function Stereo:RegisiterItem(Frame: Frame , Signel)
 		Icon.ZIndex = LayerIndex + 9
 		Icon.FontFace = Stereo.BuiltInBold
 		Icon.Text = Config.Icon
-		Icon.TextColor3 = Color3.fromRGB(214, 218, 236)
+		Icon.TextColor3 = Color3.fromRGB(210, 214, 232)
 		Icon.TextSize = 16.000
 		Icon.TextTransparency = 0.250
 		Icon.TextWrapped = true
@@ -3890,7 +3870,7 @@ function Stereo:RegisiterItem(Frame: Frame , Signel)
 
 		UserFrame.Name = Stereo.RandomString();
 		UserFrame.Parent = Frame
-		UserFrame.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+		UserFrame.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 		UserFrame.BackgroundTransparency = 1.000
 		UserFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		UserFrame.BorderSizePixel = 0
@@ -3916,7 +3896,7 @@ function Stereo:RegisiterItem(Frame: Frame , Signel)
 		LineFrame.Name = Stereo.RandomString();
 		LineFrame.Parent = UserFrame
 		LineFrame.AnchorPoint = Vector2.new(0.5, 1)
-		LineFrame.BackgroundColor3 = Color3.fromRGB(46, 52, 74)
+		LineFrame.BackgroundColor3 = Color3.fromRGB(53, 57, 76)
 		LineFrame.BackgroundTransparency = 0.650
 		LineFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		LineFrame.BorderSizePixel = 0
@@ -3924,7 +3904,7 @@ function Stereo:RegisiterItem(Frame: Frame , Signel)
 		LineFrame.Size = UDim2.new(1, -20, 0, 1)
 		LineFrame.ZIndex = LayerIndex + 11
 
-		UICorner.CornerRadius = UDim.new(0, 8)
+		UICorner.CornerRadius = UDim.new(0, 10)
 		UICorner.Parent = UserFrame
 
 		LogoImage.Name = Stereo.RandomString();
@@ -4095,7 +4075,7 @@ function Stereo:CreateWindow(Config)
 	WindowFrame.Name = Stereo.RandomString();
 	WindowFrame.Parent = Stereo.ScreenGui;
 	WindowFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-	WindowFrame.BackgroundColor3 = Color3.fromRGB(13, 15, 22)
+	WindowFrame.BackgroundColor3 = Color3.fromRGB(10, 11, 17)
 	WindowFrame.BackgroundTransparency = 0.055
 	WindowFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	WindowFrame.BorderSizePixel = 0
@@ -4151,12 +4131,7 @@ function Stereo:CreateWindow(Config)
 		if value then
 		Stereo.PlayAnimate(WindowFrame , SlowyTween , {
 			BackgroundTransparency = (Stereo.EnabledBlur and 0.055) or 0.0255,
-			Size = Window.Size,
-			Position = UDim2.new(0.5, 0, 0.5, 0)
-		})
-
-		Stereo.PlayAnimate(TopAccentBar , SlowyTween , {
-			BackgroundTransparency = 0.300
+			Size = Window.Size
 		})
 
 			Stereo.PlayAnimate(LogoImage , SlowyTween , {
@@ -4252,12 +4227,7 @@ function Stereo:CreateWindow(Config)
 
 		Stereo.PlayAnimate(WindowFrame , SlowyTween , {
 			BackgroundTransparency = 1,
-			Size = Window.Size + UDim2.fromOffset(-15,-15),
-			Position = UDim2.new(0.5, 0, 0.53, 0)
-		})
-
-		Stereo.PlayAnimate(TopAccentBar , SlowyTween , {
-			BackgroundTransparency = 1
+			Size = Window.Size + UDim2.fromOffset(-15,-15)
 		})
 
 			Stereo.PlayAnimate(LogoImage , SlowyTween , {
@@ -4386,18 +4356,7 @@ function Stereo:CreateWindow(Config)
 	end
 
 	UICorner.Parent = WindowFrame
-	UICorner.CornerRadius = UDim.new(0, 14)
-
-	local TopAccentBar = Instance.new("Frame")
-
-	TopAccentBar.Name = Stereo.RandomString();
-	TopAccentBar.Parent = WindowFrame
-	TopAccentBar.BackgroundColor3 = Stereo.AccentColor
-	TopAccentBar.BackgroundTransparency = 0.300
-	TopAccentBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	TopAccentBar.BorderSizePixel = 0
-	TopAccentBar.Size = UDim2.new(1, 0, 0, 2)
-	TopAccentBar.ZIndex = 12
+	UICorner.CornerRadius = UDim.new(0, 10)
 
 	LeftMenuFrame.Name = Stereo.RandomString();
 	LeftMenuFrame.Parent = WindowFrame
@@ -4405,7 +4364,7 @@ function Stereo:CreateWindow(Config)
 	LeftMenuFrame.BackgroundTransparency = 1.000
 	LeftMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	LeftMenuFrame.BorderSizePixel = 0
-	LeftMenuFrame.Size = UDim2.new(0, 185, 1, 0)
+	LeftMenuFrame.Size = UDim2.new(0, 175, 1, 0)
 
 	HeadFrame.Name = Stereo.RandomString();
 	HeadFrame.Parent = LeftMenuFrame
@@ -4467,7 +4426,7 @@ function Stereo:CreateWindow(Config)
 	LineFrame.Name = Stereo.RandomString();
 	LineFrame.Parent = HeadFrame
 	LineFrame.AnchorPoint = Vector2.new(0.5, 1)
-	LineFrame.BackgroundColor3 = Color3.fromRGB(46, 52, 74)
+	LineFrame.BackgroundColor3 = Color3.fromRGB(53, 57, 76)
 	LineFrame.BackgroundTransparency = 0.650
 	LineFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	LineFrame.BorderSizePixel = 0
@@ -4558,7 +4517,7 @@ function Stereo:CreateWindow(Config)
 	LineFrame_2.Name = Stereo.RandomString();
 	LineFrame_2.Parent = BottomFrame
 	LineFrame_2.AnchorPoint = Vector2.new(0.5, 0)
-	LineFrame_2.BackgroundColor3 = Color3.fromRGB(46, 52, 74)
+	LineFrame_2.BackgroundColor3 = Color3.fromRGB(53, 57, 76)
 	LineFrame_2.BackgroundTransparency = 0.650
 	LineFrame_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	LineFrame_2.BorderSizePixel = 0
@@ -4596,13 +4555,13 @@ function Stereo:CreateWindow(Config)
 
 	RightMenuFrame.Name = Stereo.RandomString();
 	RightMenuFrame.Parent = WindowFrame
-	RightMenuFrame.BackgroundColor3 = Color3.fromRGB(13, 15, 22)
+	RightMenuFrame.BackgroundColor3 = Color3.fromRGB(10, 11, 17)
 	RightMenuFrame.BackgroundTransparency = 0.600
 	RightMenuFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	RightMenuFrame.BorderSizePixel = 0
 	RightMenuFrame.ClipsDescendants = true
-	RightMenuFrame.Position = UDim2.new(0, 186, 0, 0)
-	RightMenuFrame.Size = UDim2.new(1, -186, 1, 0)
+	RightMenuFrame.Position = UDim2.new(0, 176, 0, 0)
+	RightMenuFrame.Size = UDim2.new(1, -176, 1, 0)
 	RightMenuFrame.ZIndex = 8
 
 	UICorner_4.CornerRadius = UDim.new(0, 13)
@@ -4610,7 +4569,7 @@ function Stereo:CreateWindow(Config)
 
 	CornerFix_TL.Name = Stereo.RandomString();
 	CornerFix_TL.Parent = RightMenuFrame
-	CornerFix_TL.BackgroundColor3 = Color3.fromRGB(13, 15, 22)
+	CornerFix_TL.BackgroundColor3 = Color3.fromRGB(10, 11, 17)
 	CornerFix_TL.BackgroundTransparency = 0.600
 	CornerFix_TL.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	CornerFix_TL.BorderSizePixel = 0
@@ -4621,7 +4580,7 @@ function Stereo:CreateWindow(Config)
 	CornerFix_BL.Name = Stereo.RandomString();
 	CornerFix_BL.Parent = RightMenuFrame
 	CornerFix_BL.AnchorPoint = Vector2.new(0, 1)
-	CornerFix_BL.BackgroundColor3 = Color3.fromRGB(13, 15, 22)
+	CornerFix_BL.BackgroundColor3 = Color3.fromRGB(10, 11, 17)
 	CornerFix_BL.BackgroundTransparency = 0.600
 	CornerFix_BL.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	CornerFix_BL.BorderSizePixel = 0
@@ -4631,7 +4590,7 @@ function Stereo:CreateWindow(Config)
 
 	LeftLineFrame.Name = Stereo.RandomString();
 	LeftLineFrame.Parent = RightMenuFrame
-	LeftLineFrame.BackgroundColor3 = Color3.fromRGB(46, 52, 74)
+	LeftLineFrame.BackgroundColor3 = Color3.fromRGB(53, 57, 76)
 	LeftLineFrame.BackgroundTransparency = 0.650
 	LeftLineFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	LeftLineFrame.BorderSizePixel = 0
@@ -4650,7 +4609,7 @@ function Stereo:CreateWindow(Config)
 	LineFrame_3.Name = Stereo.RandomString();
 	LineFrame_3.Parent = RightHeader
 	LineFrame_3.AnchorPoint = Vector2.new(0.5, 1)
-	LineFrame_3.BackgroundColor3 = Color3.fromRGB(46, 52, 74)
+	LineFrame_3.BackgroundColor3 = Color3.fromRGB(53, 57, 76)
 	LineFrame_3.BackgroundTransparency = 0.650
 	LineFrame_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	LineFrame_3.BorderSizePixel = 0
@@ -4661,7 +4620,7 @@ function Stereo:CreateWindow(Config)
 	ConfigFrame.Name = Stereo.RandomString();
 	ConfigFrame.Parent = RightHeader
 	ConfigFrame.AnchorPoint = Vector2.new(0, 0.5)
-	ConfigFrame.BackgroundColor3 = Color3.fromRGB(24, 27, 40)
+	ConfigFrame.BackgroundColor3 = Color3.fromRGB(18, 20, 30)
 	ConfigFrame.BackgroundTransparency = 0.750
 	ConfigFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ConfigFrame.BorderSizePixel = 0
@@ -4670,10 +4629,10 @@ function Stereo:CreateWindow(Config)
 	ConfigFrame.ZIndex = 9
 
 	UIStroke_2.Transparency = 0.650
-	UIStroke_2.Color = Color3.fromRGB(46, 52, 74)
+	UIStroke_2.Color = Color3.fromRGB(53, 57, 76)
 	UIStroke_2.Parent = ConfigFrame
 
-	UICorner_5.CornerRadius = UDim.new(0, 8)
+	UICorner_5.CornerRadius = UDim.new(0, 4)
 	UICorner_5.Parent = ConfigFrame
 
 	ConfigIcon.Name = Stereo.RandomString();
@@ -4688,14 +4647,14 @@ function Stereo:CreateWindow(Config)
 	ConfigIcon.ZIndex = 9
 	ConfigIcon.FontFace = Stereo.BuiltInBold
 	ConfigIcon.Text = "floppy-disk"
-	ConfigIcon.TextColor3 = Color3.fromRGB(214, 218, 236)
+	ConfigIcon.TextColor3 = Color3.fromRGB(210, 214, 232)
 	ConfigIcon.TextSize = 16.000
 	ConfigIcon.TextTransparency = 0.250
 	ConfigIcon.TextWrapped = true
 
 	LineFrame_4.Name = Stereo.RandomString();
 	LineFrame_4.Parent = ConfigFrame
-	LineFrame_4.BackgroundColor3 = Color3.fromRGB(46, 52, 74)
+	LineFrame_4.BackgroundColor3 = Color3.fromRGB(53, 57, 76)
 	LineFrame_4.BackgroundTransparency = 0.650
 	LineFrame_4.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	LineFrame_4.BorderSizePixel = 0
@@ -4731,7 +4690,7 @@ function Stereo:CreateWindow(Config)
 	ConfigBthIcon.ZIndex = 9
 	ConfigBthIcon.FontFace = Stereo.BuiltInBold
 	ConfigBthIcon.Text = "chevron-small-down"
-	ConfigBthIcon.TextColor3 = Color3.fromRGB(214, 218, 236)
+	ConfigBthIcon.TextColor3 = Color3.fromRGB(210, 214, 232)
 	ConfigBthIcon.TextSize = 16.000
 	ConfigBthIcon.TextTransparency = 0.250
 	ConfigBthIcon.TextWrapped = true
@@ -4760,7 +4719,7 @@ function Stereo:CreateWindow(Config)
 	SearchIcon.ZIndex = 12
 	SearchIcon.FontFace = Stereo.BuiltInBold
 	SearchIcon.Text = "magnifying-glass"
-	SearchIcon.TextColor3 = Color3.fromRGB(214, 218, 236)
+	SearchIcon.TextColor3 = Color3.fromRGB(210, 214, 232)
 	SearchIcon.TextSize = 14.000
 	SearchIcon.TextTransparency = 0.45
 	SearchIcon.TextWrapped = true
@@ -4969,11 +4928,11 @@ function Stereo:CreateWindow(Config)
 		TabLabel.BorderSizePixel = 0
 		TabLabel.Size = UDim2.new(1, -7, 0, 15)
 		TabLabel.ZIndex = 8
-		TabLabel.Font = Enum.Font.GothamBold
+		TabLabel.Font = Enum.Font.GothamMedium
 		TabLabel.Text = Name
 		TabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 		TabLabel.TextSize = 11.000
-		TabLabel.TextTransparency = 0.350
+		TabLabel.TextTransparency = 0.500
 		TabLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 		local SetRender = LPH_NO_VIRTUALIZE(function(val)
@@ -5006,60 +4965,37 @@ function Stereo:CreateWindow(Config)
 
 		local TabButton = Instance.new("Frame")
 		local UICorner = Instance.new("UICorner")
-		local TabGradient = Instance.new("UIGradient")
-		local TabChip = Instance.new("Frame")
-		local TabChipCorner = Instance.new("UICorner")
 		local TabIcon = Instance.new("TextLabel")
 		local TabContentLabel = Instance.new("TextLabel")
-		local TabAccentBar = Instance.new("Frame")
-		local TabAccentCorner = Instance.new("UICorner")
 
 		Tab.Idx = TabButton;
 
 		TabButton.Name = Stereo.RandomString();
 		TabButton.Parent = LeftScrollingFrame
-		TabButton.BackgroundColor3 = Color3.fromRGB(30, 33, 50)
-		TabButton.BackgroundTransparency = 1.000
+		TabButton.BackgroundColor3 = Color3.fromRGB(32, 35, 49)
+		TabButton.BackgroundTransparency = 0.500
 		TabButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		TabButton.BorderSizePixel = 0
-		TabButton.Size = UDim2.new(1, -1, 0, 34)
+		TabButton.Size = UDim2.new(1, -1, 0, 30)
 		TabButton.ZIndex = 8
 
-		UICorner.CornerRadius = UDim.new(0, 10)
+		UICorner.CornerRadius = UDim.new(0, 8)
 		UICorner.Parent = TabButton
 
-		TabGradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Stereo.AccentColor), ColorSequenceKeypoint.new(1, Color3.fromRGB(183, 40, 90))}
-		TabGradient.Rotation = 90
-		TabGradient.Transparency = 1
-		TabGradient.Parent = TabButton
-
-		TabChip.Name = Stereo.RandomString();
-		TabChip.Parent = TabButton
-		TabChip.AnchorPoint = Vector2.new(0, 0.5)
-		TabChip.BackgroundColor3 = Stereo.AccentColor
-		TabChip.BackgroundTransparency = 1.000
-		TabChip.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		TabChip.BorderSizePixel = 0
-		TabChip.Position = UDim2.new(0, 6, 0.5, 0)
-		TabChip.Size = UDim2.new(0, 22, 0, 22)
-		TabChip.ZIndex = 9
-
-		TabChipCorner.CornerRadius = UDim.new(0, 7)
-		TabChipCorner.Parent = TabChip
-
 		TabIcon.Name = Stereo.RandomString();
-		TabIcon.Parent = TabChip
+		TabIcon.Parent = TabButton
+		TabIcon.AnchorPoint = Vector2.new(0, 0.5)
 		TabIcon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 		TabIcon.BackgroundTransparency = 1.000
 		TabIcon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		TabIcon.BorderSizePixel = 0
-		TabIcon.Position = UDim2.new(0, 1, 0, 1)
-		TabIcon.Size = UDim2.new(1, -2, 1, -2)
-		TabIcon.ZIndex = 10
+		TabIcon.Position = UDim2.new(0, 2, 0.5, 0)
+		TabIcon.Size = UDim2.new(0, 25, 0, 25)
+		TabIcon.ZIndex = 9
 		TabIcon.FontFace = Stereo.BuiltInBold
 		TabIcon.Text = Config.Icon;
-		TabIcon.TextColor3 = Color3.fromRGB(245, 247, 255)
-		TabIcon.TextSize = 13.000
+		TabIcon.TextColor3 = Stereo.AccentColor
+		TabIcon.TextSize = 16.000
 		TabIcon.TextWrapped = true
 
 		TabContentLabel.Name = Stereo.RandomString();
@@ -5069,29 +5005,14 @@ function Stereo:CreateWindow(Config)
 		TabContentLabel.BackgroundTransparency = 1.000
 		TabContentLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		TabContentLabel.BorderSizePixel = 0
-		TabContentLabel.Position = UDim2.new(0, 32, 0.5, 0)
-		TabContentLabel.Size = UDim2.new(1, -42, 0, 15)
+		TabContentLabel.Position = UDim2.new(0, 30, 0.5, 0)
+		TabContentLabel.Size = UDim2.new(1, -7, 0, 15)
 		TabContentLabel.ZIndex = 9
-		TabContentLabel.Font = Enum.Font.GothamBold
+		TabContentLabel.Font = Enum.Font.GothamMedium
 		TabContentLabel.Text = Config.Name
 		TabContentLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 		TabContentLabel.TextSize = 12.000
-		TabContentLabel.TextTransparency = 0.450
 		TabContentLabel.TextXAlignment = Enum.TextXAlignment.Left
-
-		TabAccentBar.Name = Stereo.RandomString();
-		TabAccentBar.Parent = TabButton
-		TabAccentBar.AnchorPoint = Vector2.new(1, 0.5)
-		TabAccentBar.BackgroundColor3 = Stereo.AccentColor
-		TabAccentBar.BackgroundTransparency = 1.000
-		TabAccentBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
-		TabAccentBar.BorderSizePixel = 0
-		TabAccentBar.Position = UDim2.new(1, -2, 0.5, 0)
-		TabAccentBar.Size = UDim2.new(0, 3, 0, 16)
-		TabAccentBar.ZIndex = 10
-
-		TabAccentCorner.CornerRadius = UDim.new(0, 2)
-		TabAccentCorner.Parent = TabAccentBar
 
 		local TabFrame = Instance.new("Frame")
 		local LeftScroll = Instance.new("ScrollingFrame")
@@ -5174,12 +5095,6 @@ function Stereo:CreateWindow(Config)
 				UIListLayout_2.Parent = RightScroll;
 				TabFrame.Visible = true;
 				TabFrame.Parent = TabContainer;
-
-				TabFrame.Size = UDim2.new(0.985, 0, 0.985, 0);
-
-				Stereo.PlayAnimate(TabFrame , VSlowTween , {
-					Size = UDim2.new(1, 0, 1, 0)
-				});
 			end;
 		end)));
 
@@ -5188,55 +5103,29 @@ function Stereo:CreateWindow(Config)
 
 			if value then
 				Stereo.PlayAnimate(TabButton , SlowyTween , {
-					BackgroundTransparency = 0.120
-				})
-
-				Stereo.PlayAnimate(TabGradient , SlowyTween , {
-					Transparency = 0.200
-				})
-
-				Stereo.PlayAnimate(TabChip , SlowyTween , {
-					BackgroundTransparency = 0
+					BackgroundTransparency = 0.500
 				})
 
 				Stereo.PlayAnimate(TabIcon , SlowyTween , {
 					TextTransparency = 0,
-					TextColor3 = Color3.fromRGB(245, 247, 255)
+					TextColor3 = Stereo.AccentColor
 				})
 
 				Stereo.PlayAnimate(TabContentLabel , SlowyTween , {
-					TextTransparency = 0,
-					TextColor3 = Color3.fromRGB(245, 247, 255)
-				})
-
-				Stereo.PlayAnimate(TabAccentBar , SlowyTween , {
-					BackgroundTransparency = 0
+					TextTransparency = 0
 				})
 			else
 				Stereo.PlayAnimate(TabButton , SlowyTween , {
 					BackgroundTransparency = 1
 				})
 
-				Stereo.PlayAnimate(TabGradient , SlowyTween , {
-					Transparency = 1
-				})
-
-				Stereo.PlayAnimate(TabChip , SlowyTween , {
-					BackgroundTransparency = 1
-				})
-
 				Stereo.PlayAnimate(TabIcon , SlowyTween , {
-					TextTransparency = 0.450,
-					TextColor3 = Color3.fromRGB(202, 206, 226)
+					TextTransparency = 0.5,
+					TextColor3 = Color3.fromRGB(243, 245, 255)
 				})
 
 				Stereo.PlayAnimate(TabContentLabel , SlowyTween , {
-					TextTransparency = 0.450,
-					TextColor3 = Color3.fromRGB(202, 206, 226)
-				})
-
-				Stereo.PlayAnimate(TabAccentBar , SlowyTween , {
-					BackgroundTransparency = 1
+					TextTransparency = 0.5
 				})
 			end;
 		end);
@@ -5263,11 +5152,11 @@ function Stereo:CreateWindow(Config)
 		Stereo:AddSignal(over.MouseEnter:Connect(LPH_NO_VIRTUALIZE(function()
 			if Window.Tabs[Window.CurrentTab] == Tab then
 				Stereo.PlayAnimate(TabButton , SlowyTween , {
-					BackgroundTransparency = 0.120
+					BackgroundTransparency = 0.500
 				})
 			else
 				Stereo.PlayAnimate(TabButton , SlowyTween , {
-					BackgroundTransparency = 0.700
+					BackgroundTransparency = 0.8
 				})
 			end;
 		end)))
@@ -5275,7 +5164,7 @@ function Stereo:CreateWindow(Config)
 		Stereo:AddSignal(over.MouseLeave:Connect(LPH_NO_VIRTUALIZE(function()
 			if Window.Tabs[Window.CurrentTab] == Tab then
 				Stereo.PlayAnimate(TabButton , SlowyTween , {
-					BackgroundTransparency = 0.120
+					BackgroundTransparency = 0.500
 				})
 			else
 				Stereo.PlayAnimate(TabButton , SlowyTween , {
@@ -5298,24 +5187,12 @@ function Stereo:CreateWindow(Config)
 					BackgroundTransparency = 1
 				})
 
-				Stereo.PlayAnimate(TabGradient , SlowyTween , {
-					Transparency = 1
-				})
-
-				Stereo.PlayAnimate(TabChip , SlowyTween , {
-					BackgroundTransparency = 1
-				})
-
 				Stereo.PlayAnimate(TabIcon , SlowyTween , {
 					TextTransparency = 1,
 				})
 
 				Stereo.PlayAnimate(TabContentLabel , SlowyTween , {
 					TextTransparency = 1
-				})
-
-				Stereo.PlayAnimate(TabAccentBar , SlowyTween , {
-					BackgroundTransparency = 1
 				})
 			end;
 		end));
@@ -5332,8 +5209,6 @@ function Stereo:CreateWindow(Config)
 			local UIStroke = Instance.new("UIStroke")
 			local UICorner = Instance.new("UICorner")
 			local UIListLayout = Instance.new("UIListLayout")
-			local AccentLine = Instance.new("Frame")
-			local AccentLineCorner = Instance.new("UICorner")
 
 			SectionFrame.Name = Stereo.RandomString();
 			SectionFrame.Parent = (string.lower(Config.Position) == 'left' and LeftScroll) or RightScroll
@@ -5355,7 +5230,7 @@ function Stereo:CreateWindow(Config)
 			SectionLabel.Position = UDim2.new(0.5, 0, 0, 0)
 			SectionLabel.Size = UDim2.new(1, -35, 0, 15)
 			SectionLabel.ZIndex = 9
-			SectionLabel.Font = Enum.Font.GothamBold
+			SectionLabel.Font = Enum.Font.GothamMedium
 			SectionLabel.Text = Config.Name
 			SectionLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 			SectionLabel.TextSize = 11.000
@@ -5365,8 +5240,8 @@ function Stereo:CreateWindow(Config)
 			SectionHandler.Name = Stereo.RandomString();
 			SectionHandler.Parent = SectionFrame
 			SectionHandler.AnchorPoint = Vector2.new(0.5, 0)
-			SectionHandler.BackgroundColor3 = Color3.fromRGB(20, 23, 34)
-			SectionHandler.BackgroundTransparency = 0.350
+			SectionHandler.BackgroundColor3 = Color3.fromRGB(17, 19, 28)
+			SectionHandler.BackgroundTransparency = 0.500
 			SectionHandler.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			SectionHandler.BorderSizePixel = 0
 			SectionHandler.ClipsDescendants = true
@@ -5374,26 +5249,12 @@ function Stereo:CreateWindow(Config)
 			SectionHandler.Size = UDim2.new(1, -10, 1, -21)
 			SectionHandler.ZIndex = 9
 
-			UIStroke.Transparency = 0.850
-			UIStroke.Color = Color3.fromRGB(46, 52, 74)
+			UIStroke.Transparency = 0.650
+			UIStroke.Color = Color3.fromRGB(53, 57, 76)
 			UIStroke.Parent = SectionHandler
 
-			UICorner.CornerRadius = UDim.new(0, 12)
+			UICorner.CornerRadius = UDim.new(0, 10)
 			UICorner.Parent = SectionHandler
-
-			AccentLine.Name = Stereo.RandomString();
-			AccentLine.Parent = SectionFrame
-			AccentLine.AnchorPoint = Vector2.new(0.5, 0)
-			AccentLine.BackgroundColor3 = Stereo.AccentColor
-			AccentLine.BackgroundTransparency = 0.650
-			AccentLine.BorderColor3 = Color3.fromRGB(0, 0, 0)
-			AccentLine.BorderSizePixel = 0
-			AccentLine.Position = UDim2.new(0.5, 0, 0, 17)
-			AccentLine.Size = UDim2.new(0, 26, 0, 2)
-			AccentLine.ZIndex = 10
-
-			AccentLineCorner.CornerRadius = UDim.new(0, 1)
-			AccentLineCorner.Parent = AccentLine
 
 			UIListLayout.Parent = SectionHandler
 			UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -5418,19 +5279,15 @@ function Stereo:CreateWindow(Config)
 			Section.SetRender = LPH_NO_VIRTUALIZE(function(value)
 				if value then
 					Stereo.PlayAnimate(SectionLabel,SlowyTween,{
-						TextTransparency = 0.350
+						TextTransparency = 0.500
 					})
 
 					Stereo.PlayAnimate(SectionHandler,SlowyTween,{
-						BackgroundTransparency = 0.350
+						BackgroundTransparency = 0.500
 					})
 
 					Stereo.PlayAnimate(UIStroke,SlowyTween,{
-						Transparency = 0.850
-					})
-
-					Stereo.PlayAnimate(AccentLine,SlowyTween,{
-						BackgroundTransparency = 0.650
+						Transparency = 0.650
 					})
 				else
 					Stereo.PlayAnimate(SectionLabel,SlowyTween,{
@@ -5443,10 +5300,6 @@ function Stereo:CreateWindow(Config)
 
 					Stereo.PlayAnimate(UIStroke,SlowyTween,{
 						Transparency = 1
-					})
-
-					Stereo.PlayAnimate(AccentLine,SlowyTween,{
-						BackgroundTransparency = 1
 					})
 				end;
 			end);
@@ -5582,7 +5435,7 @@ function Stereo:CreateWindow(Config)
 		ConfigMenu.Name = Stereo.RandomString();
 		ConfigMenu.Parent = Stereo.ScreenGui;
 		ConfigMenu.AnchorPoint = Vector2.new(0.5, 0)
-		ConfigMenu.BackgroundColor3 = Color3.fromRGB(20, 23, 34)
+		ConfigMenu.BackgroundColor3 = Color3.fromRGB(17, 19, 28)
 		ConfigMenu.BackgroundTransparency = 0.035
 		ConfigMenu.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		ConfigMenu.BorderSizePixel = 0
@@ -5591,7 +5444,7 @@ function Stereo:CreateWindow(Config)
 		ConfigMenu.Size = UDim2.new(0, 220,0, 110)
 		ConfigMenu.ZIndex = 151
 
-		UICorner.CornerRadius = UDim.new(0, 12)
+		UICorner.CornerRadius = UDim.new(0, 10)
 		UICorner.Parent = ConfigMenu
 
 		UIListLayout.Parent = ConfigMenu
@@ -5600,12 +5453,12 @@ function Stereo:CreateWindow(Config)
 		UIListLayout.Padding = UDim.new(0, 4)
 
 		UIStroke.Transparency = 0.650
-		UIStroke.Color = Color3.fromRGB(46, 52, 74)
+		UIStroke.Color = Color3.fromRGB(53, 57, 76)
 		UIStroke.Parent = ConfigMenu
 
 		InputFrame.Name = Stereo.RandomString();
 		InputFrame.Parent = ConfigMenu
-		InputFrame.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+		InputFrame.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 		InputFrame.BackgroundTransparency = 1.000
 		InputFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		InputFrame.BorderSizePixel = 0
@@ -5631,7 +5484,7 @@ function Stereo:CreateWindow(Config)
 		LineFrame.Name = Stereo.RandomString();
 		LineFrame.Parent = InputFrame
 		LineFrame.AnchorPoint = Vector2.new(0.5, 1)
-		LineFrame.BackgroundColor3 = Color3.fromRGB(46, 52, 74)
+		LineFrame.BackgroundColor3 = Color3.fromRGB(53, 57, 76)
 		LineFrame.BackgroundTransparency = 0.650
 		LineFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		LineFrame.BorderSizePixel = 0
@@ -5672,7 +5525,7 @@ function Stereo:CreateWindow(Config)
 
 		TextInput.Name = Stereo.RandomString();
 		TextInput.Parent = BasedHandler
-		TextInput.BackgroundColor3 = Color3.fromRGB(26, 30, 44)
+		TextInput.BackgroundColor3 = Color3.fromRGB(23, 25, 36)
 		TextInput.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		TextInput.BorderSizePixel = 0
 		TextInput.ClipsDescendants = true
@@ -5683,7 +5536,7 @@ function Stereo:CreateWindow(Config)
 		UICorner_2.Parent = TextInput
 
 		UIStroke_2.Transparency = 0.650
-		UIStroke_2.Color = Color3.fromRGB(46, 52, 74)
+		UIStroke_2.Color = Color3.fromRGB(53, 57, 76)
 		UIStroke_2.Parent = TextInput
 
 		TextBox.Parent = TextInput
@@ -5706,7 +5559,7 @@ function Stereo:CreateWindow(Config)
 
 		LoadConfig.Name = Stereo.RandomString();
 		LoadConfig.Parent = BasedHandler
-		LoadConfig.BackgroundColor3 = Color3.fromRGB(36, 40, 58)
+		LoadConfig.BackgroundColor3 = Color3.fromRGB(33, 35, 48)
 		LoadConfig.BackgroundTransparency = 1.000
 		LoadConfig.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		LoadConfig.BorderSizePixel = 0
@@ -5726,7 +5579,7 @@ function Stereo:CreateWindow(Config)
 		Icon.ZIndex = 153
 		Icon.FontFace = Stereo.BuiltInBold
 		Icon.Text = "plus-large"
-		Icon.TextColor3 = Color3.fromRGB(214, 218, 236)
+		Icon.TextColor3 = Color3.fromRGB(210, 214, 232)
 		Icon.TextSize = 16.000
 		Icon.TextTransparency = 0.350
 		Icon.TextWrapped = true
@@ -5743,7 +5596,7 @@ function Stereo:CreateWindow(Config)
 		OpenButton.Name = Stereo.RandomString();
 		OpenButton.Parent = ConfigFrame
 		OpenButton.AnchorPoint = Vector2.new(0, 0.5)
-		OpenButton.BackgroundColor3 = Color3.fromRGB(20, 23, 34)
+		OpenButton.BackgroundColor3 = Color3.fromRGB(17, 19, 28)
 		OpenButton.BackgroundTransparency = 1.000
 		OpenButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		OpenButton.BorderSizePixel = 0
@@ -5902,7 +5755,7 @@ function Stereo:CreateWindow(Config)
 
 				DeleteConfig.Name = Stereo.RandomString();
 				DeleteConfig.Parent = BasedHandler
-				DeleteConfig.BackgroundColor3 = Color3.fromRGB(36, 40, 58)
+				DeleteConfig.BackgroundColor3 = Color3.fromRGB(33, 35, 48)
 				DeleteConfig.BackgroundTransparency = 1.000
 				DeleteConfig.BorderColor3 = Color3.fromRGB(0, 0, 0)
 				DeleteConfig.BorderSizePixel = 0
@@ -5922,7 +5775,7 @@ function Stereo:CreateWindow(Config)
 				Icon.ZIndex = 153
 				Icon.FontFace = Stereo.BuiltInBold
 				Icon.Text = "trash-can"
-				Icon.TextColor3 = Color3.fromRGB(214, 218, 236)
+				Icon.TextColor3 = Color3.fromRGB(210, 214, 232)
 				Icon.TextSize = 16.000
 				Icon.TextTransparency = 0.400
 				Icon.TextWrapped = true
@@ -5932,7 +5785,7 @@ function Stereo:CreateWindow(Config)
 
 				LoadConfig.Name = Stereo.RandomString();
 				LoadConfig.Parent = BasedHandler
-				LoadConfig.BackgroundColor3 = Color3.fromRGB(36, 40, 58)
+				LoadConfig.BackgroundColor3 = Color3.fromRGB(33, 35, 48)
 				LoadConfig.BackgroundTransparency = 1.000
 				LoadConfig.BorderColor3 = Color3.fromRGB(0, 0, 0)
 				LoadConfig.BorderSizePixel = 0
@@ -5952,7 +5805,7 @@ function Stereo:CreateWindow(Config)
 				Icon_2.ZIndex = 153
 				Icon_2.FontFace = Stereo.BuiltInBold
 				Icon_2.Text = "arrow-right-from-portrait-rectangle"
-				Icon_2.TextColor3 = Color3.fromRGB(214, 218, 236)
+				Icon_2.TextColor3 = Color3.fromRGB(210, 214, 232)
 				Icon_2.TextSize = 16.000
 				Icon_2.TextTransparency = 0.400
 				Icon_2.TextWrapped = true
@@ -5980,7 +5833,7 @@ function Stereo:CreateWindow(Config)
 				BasedLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 				UIStroke.Transparency = 0.500
-				UIStroke.Color = Color3.fromRGB(46, 52, 74)
+				UIStroke.Color = Color3.fromRGB(53, 57, 76)
 				UIStroke.Parent = ConfigItemFrame
 
 				local Render = LPH_NO_VIRTUALIZE(function(rst)
@@ -6090,7 +5943,7 @@ function Stereo:CreateWindow(Config)
 				table.insert(ConfigLib.Signals , deleter.MouseLeave:Connect(LPH_NO_VIRTUALIZE(function()
 					Stereo.PlayAnimate(Icon,SlowyTween,{
 						TextTransparency = 0.400,
-						TextColor3 = Color3.fromRGB(214, 218, 236)
+						TextColor3 = Color3.fromRGB(210, 214, 232)
 					})
 				end)))
 
@@ -6104,7 +5957,7 @@ function Stereo:CreateWindow(Config)
 				table.insert(ConfigLib.Signals , LoadConfig.MouseLeave:Connect(LPH_NO_VIRTUALIZE(function()
 					Stereo.PlayAnimate(Icon_2,SlowyTween,{
 						TextTransparency = 0.400,
-						TextColor3 = Color3.fromRGB(214, 218, 236)
+						TextColor3 = Color3.fromRGB(210, 214, 232)
 					})
 				end)))
 			end;
@@ -6326,7 +6179,7 @@ function Stereo:CreateWindow(Config)
 		Watermark.Name = Stereo.RandomString();
 		Watermark.Parent = Stereo.ScreenGui
 		Watermark.AnchorPoint = Vector2.new(1, 0)
-		Watermark.BackgroundColor3 = Color3.fromRGB(13, 15, 22)
+		Watermark.BackgroundColor3 = Color3.fromRGB(10, 11, 17)
 		Watermark.BackgroundTransparency = 0.200
 		Watermark.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Watermark.BorderSizePixel = 0
@@ -6335,7 +6188,7 @@ function Stereo:CreateWindow(Config)
 		Watermark.Size = UDim2.new(0, 120, 0, 30)
 		Watermark.ZIndex = 16
 
-		UICorner.CornerRadius = UDim.new(0, 10)
+		UICorner.CornerRadius = UDim.new(0, 25)
 		UICorner.Parent = Watermark
 
 		UIListLayout.Parent = Watermark
@@ -6427,7 +6280,7 @@ function Stereo:CreateWindow(Config)
 			Content.Name = Stereo.RandomString();
 			Content.Parent = Frame
 			Content.AnchorPoint = Vector2.new(0, 0.5)
-			Content.BackgroundColor3 = Color3.fromRGB(202, 206, 226)
+			Content.BackgroundColor3 = Color3.fromRGB(197, 201, 222)
 			Content.BackgroundTransparency = 1.000
 			Content.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			Content.BorderSizePixel = 0
@@ -6436,7 +6289,7 @@ function Stereo:CreateWindow(Config)
 			Content.ZIndex = 17
 			Content.Font = Enum.Font.GothamBold
 			Content.Text = Name
-			Content.TextColor3 = Color3.fromRGB(202, 206, 226)
+			Content.TextColor3 = Color3.fromRGB(197, 201, 222)
 			Content.TextSize = 15.000
 			Content.TextTransparency = 0.200
 			Content.TextXAlignment = Enum.TextXAlignment.Left
@@ -6444,7 +6297,7 @@ function Stereo:CreateWindow(Config)
 			Icon.Name = Stereo.RandomString();
 			Icon.Parent = Frame
 			Icon.AnchorPoint = Vector2.new(0, 0.5)
-			Icon.BackgroundColor3 = Color3.fromRGB(202, 206, 226)
+			Icon.BackgroundColor3 = Color3.fromRGB(197, 201, 222)
 			Icon.BackgroundTransparency = 1.000
 			Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 			Icon.BorderSizePixel = 0
@@ -6583,12 +6436,12 @@ function Stereo:CreateNotification()
 
 	Notification.Name = Stereo.RandomString();
 	Notification.Parent = Stereo.ScreenGui;
-	Notification.AnchorPoint = Vector2.new(1, 1)
+	Notification.AnchorPoint = Vector2.new(1, 0)
 	Notification.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	Notification.BackgroundTransparency = 1.000
 	Notification.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	Notification.BorderSizePixel = 0
-	Notification.Position = UDim2.new(1, -20, 1, -20)
+	Notification.Position = UDim2.new(1, -25, 0, 25)
 	Notification.Size = UDim2.new(0, 25, 0, 25)
 
 	UIListLayout.Parent = Notification
@@ -6633,7 +6486,7 @@ function Stereo:CreateNotification()
 		NotifyFrame.Name = Stereo.RandomString();
 		NotifyFrame.Parent = ContainerFrame
 		NotifyFrame.AnchorPoint = Vector2.new(1, 0)
-		NotifyFrame.BackgroundColor3 = Color3.fromRGB(20, 23, 34)
+		NotifyFrame.BackgroundColor3 = Color3.fromRGB(17, 19, 28)
 		NotifyFrame.BackgroundTransparency = 0.075
 		NotifyFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		NotifyFrame.BorderSizePixel = 0
@@ -6642,11 +6495,11 @@ function Stereo:CreateNotification()
 		NotifyFrame.Size = UDim2.new(0, 220, 0, 55)
 		NotifyFrame.ZIndex = 130
 
-		UICorner.CornerRadius = UDim.new(0, 12)
+		UICorner.CornerRadius = UDim.new(0, 10)
 		UICorner.Parent = NotifyFrame
 
 		UIStroke.Transparency = 0.650
-		UIStroke.Color = Color3.fromRGB(46, 52, 74)
+		UIStroke.Color = Color3.fromRGB(53, 57, 76)
 		UIStroke.Parent = NotifyFrame
 
 		LogoImage.Name = Stereo.RandomString();
@@ -6662,7 +6515,7 @@ function Stereo:CreateNotification()
 		LogoImage.Image = Config.Logo
 		LogoImage.ImageColor3 = Stereo.IconColor;
 
-		UICorner_2.CornerRadius = UDim.new(0, 6)
+		UICorner_2.CornerRadius = UDim.new(0, 7)
 		UICorner_2.Parent = LogoImage
 
 		NotifyName.Name = Stereo.RandomString();
@@ -6796,7 +6649,7 @@ function Stereo:CreateLogger()
 		LogFrame.Name = Stereo.RandomString();
 		LogFrame.Parent = Log
 		LogFrame.AnchorPoint = Vector2.new(0.5, 0)
-		LogFrame.BackgroundColor3 = Color3.fromRGB(20, 23, 34)
+		LogFrame.BackgroundColor3 = Color3.fromRGB(17, 19, 28)
 		LogFrame.BackgroundTransparency =  1
 		LogFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		LogFrame.BorderSizePixel = 0
@@ -6805,11 +6658,11 @@ function Stereo:CreateLogger()
 		LogFrame.Size = UDim2.new(0, 0, 0, 20)
 		LogFrame.ZIndex = 130
 
-		UICorner.CornerRadius = UDim.new(0, 8)
+		UICorner.CornerRadius = UDim.new(0, 4)
 		UICorner.Parent = LogFrame
 
 		UIStroke.Transparency = 1
-		UIStroke.Color = Color3.fromRGB(46, 52, 74)
+		UIStroke.Color = Color3.fromRGB(53, 57, 76)
 		UIStroke.Parent = LogFrame
 
 		LogContent.Name = Stereo.RandomString();
@@ -6836,10 +6689,10 @@ function Stereo:CreateLogger()
 		Line.BackgroundTransparency = 1 
 		Line.BorderSizePixel = 0
 		Line.Position = UDim2.new(0, -2, 0.5, 0)
-		Line.Size = UDim2.new(0, 3, 1, 0)
+		Line.Size = UDim2.new(0, 5, 1, 0)
 		Line.ZIndex = 131
 
-		UICorner_2.CornerRadius = UDim.new(0, 2)
+		UICorner_2.CornerRadius = UDim.new(0, 4)
 		UICorner_2.Parent = Line
 
 		Icon.Name = Stereo.RandomString();
@@ -6853,7 +6706,7 @@ function Stereo:CreateLogger()
 		Icon.ZIndex = 133
 		Icon.FontFace = Stereo.BuiltInBold
 		Icon.Text = IconStr
-		Icon.TextColor3 = Color3.fromRGB(214, 218, 236)
+		Icon.TextColor3 = Color3.fromRGB(210, 214, 232)
 		Icon.TextSize = 13.000
 		Icon.TextTransparency = 1
 		Icon.TextWrapped = true
@@ -6941,7 +6794,7 @@ function Stereo:CreateIndicator()
 	Indicators.Color = {
 		Red = Color3.fromRGB(255, 102, 105),
 		Green = Color3.fromRGB(135, 255, 143),
-		White = Color3.fromRGB(202, 206, 226),
+		White = Color3.fromRGB(197, 201, 222),
 	};
 
 	Indicators.Root = IndicatorFrame;
@@ -6968,7 +6821,7 @@ function Stereo:CreateIndicator()
 		local Shadow = Stereo:CreateShadow(IndicatorItem);
 
 		IndicatorItem.Name = Stereo.RandomString();
-		IndicatorItem.BackgroundColor3 = Color3.fromRGB(13, 15, 22)
+		IndicatorItem.BackgroundColor3 = Color3.fromRGB(10, 11, 17)
 		IndicatorItem.BackgroundTransparency = 1
 		IndicatorItem.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		IndicatorItem.BorderSizePixel = 0
@@ -6993,13 +6846,13 @@ function Stereo:CreateIndicator()
 			end;
 		end))
 
-		UICorner.CornerRadius = UDim.new(0, 14)
+		UICorner.CornerRadius = UDim.new(0, 25)
 		UICorner.Parent = IndicatorItem
 
 		Line.Name = Stereo.RandomString();
 		Line.Parent = IndicatorItem
 		Line.AnchorPoint = Vector2.new(0, 0.5)
-		Line.BackgroundColor3 = Color3.fromRGB(202, 206, 226)
+		Line.BackgroundColor3 = Color3.fromRGB(197, 201, 222)
 		Line.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Line.BorderSizePixel = 0
 		Line.Position = UDim2.new(0, 2, 0.5, 0)
@@ -7017,7 +6870,7 @@ function Stereo:CreateIndicator()
 		Icon.Name = Stereo.RandomString();
 		Icon.Parent = IndicatorItem
 		Icon.AnchorPoint = Vector2.new(0, 0.5)
-		Icon.BackgroundColor3 = Color3.fromRGB(202, 206, 226)
+		Icon.BackgroundColor3 = Color3.fromRGB(197, 201, 222)
 		Icon.BackgroundTransparency = 1.000
 		Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Icon.BorderSizePixel = 0
@@ -7026,7 +6879,7 @@ function Stereo:CreateIndicator()
 		Icon.ZIndex = 17
 		Icon.FontFace = Stereo.BuiltInBold;
 		Icon.Text = Config.Icon
-		Icon.TextColor3 = Color3.fromRGB(202, 206, 226)
+		Icon.TextColor3 = Color3.fromRGB(197, 201, 222)
 		Icon.TextSize = 21.000
 		Icon.TextTransparency = 1
 		Icon.TextWrapped = true
@@ -7034,7 +6887,7 @@ function Stereo:CreateIndicator()
 		Content.Name = Stereo.RandomString();
 		Content.Parent = IndicatorItem
 		Content.AnchorPoint = Vector2.new(0, 0.5)
-		Content.BackgroundColor3 = Color3.fromRGB(202, 206, 226)
+		Content.BackgroundColor3 = Color3.fromRGB(197, 201, 222)
 		Content.BackgroundTransparency = 1.000
 		Content.BorderColor3 = Color3.fromRGB(0, 0, 0)
 		Content.BorderSizePixel = 0
@@ -7043,7 +6896,7 @@ function Stereo:CreateIndicator()
 		Content.ZIndex = 17
 		Content.Font = Enum.Font.GothamBold
 		Content.Text = Config.Name
-		Content.TextColor3 = Color3.fromRGB(202, 206, 226)
+		Content.TextColor3 = Color3.fromRGB(197, 201, 222)
 		Content.TextSize = 20.000
 		Content.TextTransparency = 1
 		Content.TextXAlignment = Enum.TextXAlignment.Left
